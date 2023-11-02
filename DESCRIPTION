@@ -1,6 +1,6 @@
 Package: tspredit
 Title: Time Series Prediction Integrated Tuning
-Version: 1.0.707
+Version: 1.0.727
 Authors@R: 
   c(    person(
             given = "Rebecca",
@@ -15,8 +15,14 @@ Authors@R:
             email = "cristiane.gea@eic.cefet-rj.br"
         ),
         person(
-            given = "Cristiane",
-            family = "Gea",
+            given = "Vitoria",
+            family = "Birindiba",
+            role = c("aut"),
+            email = "vitoria.birindiba@eic.cefet-rj.br"
+        ),
+        person(
+            given = "Carla",
+            family = "Pacheco",
             role = c("aut"),
             email = "carla.pacheco@eic.cefet-rj.br"
         ),        
@@ -55,17 +61,19 @@ License: MIT + file LICENSE
 URL: https://github.com/cefet-rj-dal/daltoolbox,
         https://cefet-rj-dal.github.io/daltoolbox/
 Encoding: UTF-8
-RoxygenNote: 7.2.2
-Imports: glmnet, smotefamily, leaps, FSelector, doBy, dplyr, daltoolbox
+RoxygenNote: 7.2.3
+Imports: dplyr, stats, glmnet, smotefamily, leaps, FSelector, forecast,
+        mFilter, doBy, daltoolbox
 Config/reticulate: list( packages = list( list(package = "scipy"),
         list(package = "torch"), list(package = "pandas"), list(package
         = "numpy"), list(package = "matplotlib"), list(package =
         "scikit-learn") ) )
 NeedsCompilation: no
-Packaged: 2023-07-19 02:54:52 UTC; gpca
+Packaged: 2023-11-02 17:40:09 UTC; gpca
 Author: Rebecca Salles [aut],
   Cristiane Gea [aut],
-  Cristiane Gea [aut],
+  Vitoria Birindiba [aut],
+  Carla Pacheco [aut],
   Eduardo Bezerra [aut],
   Esther Pacitti [aut],
   Fabio Porto [aut],
@@ -76,4 +84,4 @@ Author: Rebecca Salles [aut],
 Maintainer: Eduardo Ogasawara <eogasawara@ieee.org>
 Depends: R (>= 3.5.0)
 Repository: CRAN
-Date/Publication: 2023-07-19 15:20:02 UTC
+Date/Publication: 2023-11-02 18:50:02 UTC

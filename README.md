@@ -7,6 +7,7 @@
 
 ![GitHub Repo
 stars](https://img.shields.io/github/stars/cefet-rj-dal/tspredit?logo=Github)
+![GitHub Repo stars](https://cranlogs.r-pkg.org/badges/tspredit)
 <!-- badges: end -->
 
 The Time Series Prediction with Integrated Tuning (TSPredIT) is based on
@@ -15,8 +16,19 @@ machine learning and data preprocessing. It also contains time series
 outliers removal, data augmentation, ensemble models, and a more
 flexible workflow design for Data Analytics tasks.
 
-You can install the development version of TSPredIT x from
-[GitHub](https://github.com/) with:
+## Installation
+
+The latest version of TSPredIT at CRAN is available at:
+<https://CRAN.R-project.org/package=tspredit>
+
+You can install the stable version of TSPredIT from CRAN with:
+
+``` r
+install.packages("tspredit")
+```
+
+You can install the development version of TSPredIT from GitHub
+<https://github.com/cefet-rj-dal/tspredit> with:
 
 ``` r
 library(devtools)
@@ -38,3 +50,7 @@ library(tspredit)
 #>   method            from
 #>   as.zoo.data.frame zoo
 ```
+
+## Bugs and new features request
+
+<https://github.com/cefet-rj-dal/tspredit/issues>

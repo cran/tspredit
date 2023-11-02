@@ -8,7 +8,7 @@ ts_maintune(
   input_size,
   base_model,
   folds = 10,
-  preprocess = list(ts_norm_gminmax()),
+  preprocess = list(daltoolbox::ts_norm_gminmax()),
   augment = list(ts_aug_none())
 )
 }
@@ -39,7 +39,7 @@ io_train <- ts_projection(samp$train)
 io_test <- ts_projection(samp$test)
 
 tune <- ts_maintune(input_size=c(3:5), base_model = ts_elm(), preprocess = list(ts_norm_gminmax()))
-ranges <- list(nhid = 1:5, actfun=c('sig', 'radbas', 'tribas', 'relu', 'purelin'))
+ranges <- list(nhid = 1:5, actfun=c('purelin'))
 
 # Generic model tunning
 model <- fit(tune, x=io_train$input, y=io_train$output, ranges)
