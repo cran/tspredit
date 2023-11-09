@@ -28,9 +28,9 @@ ts_fil_spline <- function(spar = NULL) {
   return(obj)
 }
 
-#'@export
 #'@importFrom daltoolbox transform
 #'@importFrom stats smooth.spline
+#'@export
 transform.ts_fil_spline <- function(obj, data, ...) {
   ts_final <- smooth.spline(x = data, spar = obj$spar)$y
   result <- ts_final

@@ -1,6 +1,6 @@
-2d9a83427fefbdfc23cd432fc58e284b *DESCRIPTION
+5e42e27362bfa65f886b0573823aefbe *DESCRIPTION
 7169a99e631e7b354a105505fb228957 *LICENSE
-6e3d897089a145786d5f78ede0ef4005 *NAMESPACE
+2e1daafafab58ca71ceed23c8ce5ec7c *NAMESPACE
 496b0f7e8be888229c99e02f728a25e7 *R/bal_oversampling.R
 2c19e919c0efbe6ba198f5779d4ccac3 *R/bal_subsampling.R
 671f8e6a33d7b6f165a64ad187bc4e32 *R/cla_fs.R
@@ -10,7 +10,7 @@
 841028a47dff11614234373f5be102ad *R/cla_fs_relief.R
 587ccd469aa7c17e9d98cee544191149 *R/data.R
 c90528624f422e07d0436a99436bee36 *R/globals.R
-89dec79e5de251b963224430a97647a1 *R/recursive_filter.R
+5f4e822dbdd5b8f5cf25203ba876616d *R/recursive_filter.R
 635bb17989f4b902c17970273d34a6e7 *R/ts_aug_awareness.R
 0b920079f60bb1ec799d7d9b47336aa9 *R/ts_aug_awaresmooth.R
 cdf2c942ab55e993e3d9b5855e21d6d0 *R/ts_aug_flip.R
@@ -21,12 +21,13 @@ cdf2c942ab55e993e3d9b5855e21d6d0 *R/ts_aug_flip.R
 47e47e413152a4c7d9cfca175fc3719d *R/ts_aug_wormhole.R
 d0e6892db29b0923e9157e47d99483ba *R/ts_fil_ema.R
 8a4d48adb546c7f37dd0d2cda247657f *R/ts_fil_hp.R
+c186f31274eed09d2d9034be1b641f7b *R/ts_fil_kalman.R
 ff2c2e90fb1e339eb5845e1973072c64 *R/ts_fil_lowess.R
 1156dd597c732cd48faf1448f079d6ca *R/ts_fil_ma.R
 f50b13933d11f0f6ad6fb3267dc9590d *R/ts_fil_none.R
-bacd3722ed0f4ef1e96c9df672ee68e6 *R/ts_fil_seas_adj.R
-19a560e68030f44a7a7ab82021df556e *R/ts_fil_smooth.R
-6d29ff2aa10cba4d2b6a04a2d4442651 *R/ts_fil_spline.R
+6a118856f70dd0e9a5b3113c7ed82ce1 *R/ts_fil_seas_adj.R
+6ef8ed83e0824dc09664b4ec565f748a *R/ts_fil_smooth.R
+1c81dab6862858c730e9c21c1d2c72f1 *R/ts_fil_spline.R
 145853afbb4da52e1afe205fe4b312c7 *R/ts_maintune.R
 b72f284d755a2535428c903085c00b07 *R/ts_norm_none.R
 901471f0682b3641c391bbdda9cde45a *README.md
@@ -50,6 +51,7 @@ fd385584c1e0a316d7f2e8a314014f8f *man/ts_aug_none.Rd
 275e7499411d98d7044728d64b812c59 *man/ts_aug_wormhole.Rd
 537ba68cc5d1d1a0cbe3947535116282 *man/ts_fil_ema.Rd
 d30bd5807cdf7660a5be2d56a063863d *man/ts_fil_hp.Rd
+03892024ef23e703dc6be3bd3526f089 *man/ts_fil_kalman.Rd
 d3dbb88be7a08335d659b734847e5573 *man/ts_fil_lowess.Rd
 c9e571e1e1749e43788c1a823df76f8a *man/ts_fil_ma.Rd
 37982fd266613724519b016c6d9ae09d *man/ts_fil_none.Rd

@@ -27,11 +27,11 @@ ts_fil_seas_adj <- function(frequency = NULL){
   return(obj)
 }
 
-#'@export
 #'@importFrom daltoolbox transform
 #'@importFrom forecast bats
 #'@importFrom stats ts
 #'@importFrom stats fitted
+#'@export
 transform.ts_fil_seas_adj <- function(obj, data, ...){
   if (!is.null(obj$frequency))
     data<- ts(data, frequency = obj$frequency)

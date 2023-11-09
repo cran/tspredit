@@ -23,10 +23,10 @@ ts_fil_smooth <- function() {
   return(obj)
 }
 
-#'@export
 #'@importFrom stats na.omit
 #'@importFrom graphics boxplot
 #'@importFrom daltoolbox transform
+#'@export
 transform.ts_fil_smooth <- function(obj, data, ...) {
   progressive_smoothing <- function(serie) {
     serie <- stats::na.omit(serie)

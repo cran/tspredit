@@ -26,9 +26,9 @@ ts_fil_recursive <- function(filter){
   return(obj)
 }
 
-#'@export
 #'@importFrom stats filter
 #'@importFrom daltoolbox transform
+#'@export
 transform.ts_fil_recursive <- function(obj, data, ...){
   ts_final <- stats::filter(x = data, filter = obj$filter, method = "recursive")
   return(ts_final)
