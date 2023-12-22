@@ -1,18 +1,32 @@
 Package: tspredit
 Title: Time Series Prediction Integrated Tuning
-Version: 1.0.737
+Version: 1.0.747
 Authors@R: 
-  c(    person(
-            given = "Rebecca",
-            family = "Salles",
-            role = c("aut"),
-            email = "rebecca.salles@eic.cefet-rj.br"
+  c(
+        person(
+            given = "Eduardo",
+            family = "Ogasawara",
+            role = c("aut", "ths", "cre"),
+            email = "eogasawara@ieee.org",
+            comment = c(ORCID = "0000-0002-0466-0626")
         ),
         person(
             given = "Cristiane",
             family = "Gea",
             role = c("aut"),
             email = "cristiane.gea@eic.cefet-rj.br"
+        ),
+        person(
+            given = "Diogo",
+            family = "Santos",
+            role = c("aut"),
+            email = "diogo.santos@eic.cefet-rj.br"
+        ),
+        person(
+            given = "Rebecca",
+            family = "Salles",
+            role = c("aut"),
+            email = "rebecca.salles@eic.cefet-rj.br"
         ),
         person(
             given = "Vitoria",
@@ -45,13 +59,6 @@ Authors@R:
             email = "fporto@lncc.br"
         ),
         person(
-            given = "Eduardo",
-            family = "Ogasawara",
-            role = c("aut", "ths", "cre"),
-            email = "eogasawara@ieee.org",
-            comment = c(ORCID = "0000-0002-0466-0626")
-        ),
-        person(
             given = "Federal Center for Technological Education of Rio de Janeiro (CEFET/RJ)",
             role = "cph"
         )
@@ -63,25 +70,26 @@ URL: https://github.com/cefet-rj-dal/daltoolbox,
 Encoding: UTF-8
 RoxygenNote: 7.2.3
 Imports: dplyr, stats, glmnet, smotefamily, leaps, FSelector, forecast,
-        mFilter, KFAS, doBy, daltoolbox
+        mFilter, DescTools, KFAS, doBy, daltoolbox
 Config/reticulate: list( packages = list( list(package = "scipy"),
         list(package = "torch"), list(package = "pandas"), list(package
         = "numpy"), list(package = "matplotlib"), list(package =
         "scikit-learn") ) )
 NeedsCompilation: no
-Packaged: 2023-11-09 15:49:59 UTC; gpca
-Author: Rebecca Salles [aut],
+Packaged: 2023-12-22 01:53:39 UTC; gpca
+Author: Eduardo Ogasawara [aut, ths, cre]
+    (<https://orcid.org/0000-0002-0466-0626>),
   Cristiane Gea [aut],
+  Diogo Santos [aut],
+  Rebecca Salles [aut],
   Vitoria Birindiba [aut],
   Carla Pacheco [aut],
   Eduardo Bezerra [aut],
   Esther Pacitti [aut],
   Fabio Porto [aut],
-  Eduardo Ogasawara [aut, ths, cre]
-    (<https://orcid.org/0000-0002-0466-0626>),
   Federal Center for Technological Education of Rio de Janeiro (CEFET/RJ)
     [cph]
 Maintainer: Eduardo Ogasawara <eogasawara@ieee.org>
 Depends: R (>= 3.5.0)
 Repository: CRAN
-Date/Publication: 2023-11-09 16:40:02 UTC
+Date/Publication: 2023-12-22 05:00:02 UTC
