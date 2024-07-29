@@ -1,6 +1,6 @@
 Package: tspredit
 Title: Time Series Prediction Integrated Tuning
-Version: 1.0.767
+Version: 1.0.777
 Authors@R: 
   c(
         person(
@@ -68,14 +68,15 @@ License: MIT + file LICENSE
 URL: https://github.com/cefet-rj-dal/daltoolbox,
         https://cefet-rj-dal.github.io/daltoolbox/
 Encoding: UTF-8
-RoxygenNote: 7.3.1
-Imports: dplyr, stats, forecast, mFilter, DescTools, KFAS, daltoolbox
+RoxygenNote: 7.3.2
+Imports: dplyr, stats, forecast, mFilter, DescTools, hht, wavelets,
+        KFAS, daltoolbox
 Config/reticulate: list( packages = list( list(package = "scipy"),
         list(package = "torch"), list(package = "pandas"), list(package
         = "numpy"), list(package = "matplotlib"), list(package =
         "scikit-learn") ) )
 NeedsCompilation: no
-Packaged: 2024-03-25 21:18:37 UTC; gpca
+Packaged: 2024-07-29 14:05:04 UTC; eduar
 Author: Eduardo Ogasawara [aut, ths, cre]
     (<https://orcid.org/0000-0002-0466-0626>),
   Cristiane Gea [aut],
@@ -91,4 +92,4 @@ Author: Eduardo Ogasawara [aut, ths, cre]
 Maintainer: Eduardo Ogasawara <eogasawara@ieee.org>
 Depends: R (>= 3.5.0)
 Repository: CRAN
-Date/Publication: 2024-03-26 02:20:02 UTC
+Date/Publication: 2024-07-29 14:20:02 UTC
