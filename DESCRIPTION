@@ -1,6 +1,6 @@
 Package: tspredit
 Title: Time Series Prediction Integrated Tuning
-Version: 1.0.777
+Version: 1.0.787
 Authors@R: 
   c(
         person(
@@ -10,6 +10,12 @@ Authors@R:
             email = "eogasawara@ieee.org",
             comment = c(ORCID = "0000-0002-0466-0626")
         ),
+        person(
+            given = "Carla",
+            family = "Pacheco",
+            role = c("aut"),
+            email = "carla.pacheco@eic.cefet-rj.br"
+        ),        
         person(
             given = "Cristiane",
             family = "Gea",
@@ -34,12 +40,6 @@ Authors@R:
             role = c("aut"),
             email = "vitoria.birindiba@eic.cefet-rj.br"
         ),
-        person(
-            given = "Carla",
-            family = "Pacheco",
-            role = c("aut"),
-            email = "carla.pacheco@eic.cefet-rj.br"
-        ),        
         person(
             given = "Eduardo",
             family = "Bezerra",
@@ -76,14 +76,14 @@ Config/reticulate: list( packages = list( list(package = "scipy"),
         = "numpy"), list(package = "matplotlib"), list(package =
         "scikit-learn") ) )
 NeedsCompilation: no
-Packaged: 2024-07-29 14:05:04 UTC; eduar
+Packaged: 2024-12-04 14:54:42 UTC; gpca
 Author: Eduardo Ogasawara [aut, ths, cre]
     (<https://orcid.org/0000-0002-0466-0626>),
+  Carla Pacheco [aut],
   Cristiane Gea [aut],
   Diogo Santos [aut],
   Rebecca Salles [aut],
   Vitoria Birindiba [aut],
-  Carla Pacheco [aut],
   Eduardo Bezerra [aut],
   Esther Pacitti [aut],
   Fabio Porto [aut],
@@ -92,4 +92,4 @@ Author: Eduardo Ogasawara [aut, ths, cre]
 Maintainer: Eduardo Ogasawara <eogasawara@ieee.org>
 Depends: R (>= 3.5.0)
 Repository: CRAN
-Date/Publication: 2024-07-29 14:20:02 UTC
+Date/Publication: 2024-12-04 15:30:02 UTC
