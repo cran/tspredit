@@ -1,68 +1,20 @@
 Package: tspredit
 Title: Time Series Prediction with Integrated Tuning
-Version: 1.1.707
+Version: 1.2.707
 Authors@R: 
-  c(
-    person(
-      given = "Eduardo",
-      family = "Ogasawara",
-      role = c("aut", "ths", "cre"),
-      email = "eogasawara@ieee.org",
-      comment = c(ORCID = "0000-0002-0466-0626")
-    ),
-    person(
-      given = "Carla",
-      family = "Pacheco",
-      role = c("aut"),
-      email = "carla.pacheco@eic.cefet-rj.br"
-    ),
-    person(
-      given = "Cristiane",
-      family = "Gea",
-      role = c("aut"),
-      email = "cristiane.gea@eic.cefet-rj.br"
-    ),
-    person(
-      given = "Diogo",
-      family = "Santos",
-      role = c("aut"),
-      email = "diogo.santos@eic.cefet-rj.br"
-    ),
-    person(
-      given = "Rebecca",
-      family = "Salles",
-      role = c("aut"),
-      email = "rebecca.salles@eic.cefet-rj.br"
-    ),
-    person(
-      given = "Vitoria",
-      family = "Birindiba",
-      role = c("aut"),
-      email = "vitoria.birindiba@eic.cefet-rj.br"
-    ),
-    person(
-      given = "Eduardo",
-      family = "Bezerra",
-      role = c("aut"),
-      email = "ebezerra@cefet-rj.br"
-    ),
-    person(
-      given = "Esther",
-      family = "Pacitti",
-      role = c("aut"),
-      email = "Esther.Pacitti@lirmm.fr"
-    ),
-    person(
-      given = "Fabio",
-      family = "Porto",
-      role = c("aut"),
-      email = "fporto@lncc.br"
-    ),
-    person(
-      given = "CEFET/RJ",
-      role = "cph",
-      comment = c(organization = "Federal Center for Technological Education of Rio de Janeiro")
-    )
+  c(    person(given = "Eduardo", family = "Ogasawara", role = c("aut", "ths", "cre"), 
+               email = "eogasawara@ieee.org", comment = c(ORCID = "0000-0002-0466-0626")),
+        person(given = "Fernando", family = "Alexandrino", role = "aut", email = "fernando.alexandrino@ifsp.edu.br"),
+        person(given = "Cristiane", family = "Gea", role = "aut", email = "cristiane.gea@eic.cefet-rj.br"),
+        person(given = "Diogo", family = "Santos", role = "aut", email = "diogo.santos@eic.cefet-rj.br"),
+        person(given = "Rebecca", family = "Salles", role = "aut", email = "rebecca.salles@eic.cefet-rj.br"),
+        person(given = "Vitoria", family = "Birindiba", role = "aut", email = "vitoria.birindiba@eic.cefet-rj.br"),
+        person(given = "Carla", family = "Pacheco", role = "ctb", email = "carla.pacheco@eic.cefet-rj.br"),
+        person(given = "Eduardo", family = "Bezerra", role = "ctb", email = "ebezerra@cefet-rj.br"),
+        person(given = "Esther", family = "Pacitti", role = "ctb", email = "Esther.Pacitti@lirmm.fr"),
+        person(given = "Fabio", family = "Porto", role = "ctb", email = "fporto@lncc.br"),
+        person(given = "Diego", family = "Carvalho", role = "ctb", email = "diego.carvalho@cefet-rj.br"),
+        person(given = "CEFET/RJ", role = "cph")
   )
 Description: 
   Time series prediction is a critical task in data analysis, requiring not only the selection of appropriate models, but also suitable data preprocessing and tuning strategies. 
@@ -77,22 +29,23 @@ BugReports: https://github.com/cefet-rj-dal/tspredit/issues
 Encoding: UTF-8
 RoxygenNote: 7.3.2
 Depends: R (>= 4.1.0)
-Imports: dplyr, stats, forecast, mFilter, DescTools, hht, wavelets,
-        KFAS, daltoolbox
+Imports: stats, DescTools, e1071, elmNNRcpp, FNN, forecast, hht, KFAS,
+        mFilter, nnet, randomForest, wavelets, dplyr, daltoolbox
 NeedsCompilation: no
-Packaged: 2025-04-24 03:52:39 UTC; gpca
-Author: Eduardo Ogasawara [aut, ths, cre]
-    (<https://orcid.org/0000-0002-0466-0626>),
-  Carla Pacheco [aut],
+Packaged: 2025-05-13 05:03:39 UTC; gpca
+Author: Eduardo Ogasawara [aut, ths, cre] (ORCID:
+    <https://orcid.org/0000-0002-0466-0626>),
+  Fernando Alexandrino [aut],
   Cristiane Gea [aut],
   Diogo Santos [aut],
   Rebecca Salles [aut],
   Vitoria Birindiba [aut],
-  Eduardo Bezerra [aut],
-  Esther Pacitti [aut],
-  Fabio Porto [aut],
-  CEFET/RJ [cph] (Federal Center for Technological Education of Rio de
-    Janeiro)
+  Carla Pacheco [ctb],
+  Eduardo Bezerra [ctb],
+  Esther Pacitti [ctb],
+  Fabio Porto [ctb],
+  Diego Carvalho [ctb],
+  CEFET/RJ [cph]
 Maintainer: Eduardo Ogasawara <eogasawara@ieee.org>
 Repository: CRAN
-Date/Publication: 2025-04-24 11:40:02 UTC
+Date/Publication: 2025-05-13 06:20:02 UTC
