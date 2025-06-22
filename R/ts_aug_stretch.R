@@ -5,10 +5,10 @@
 #'@return a `ts_aug_stretch` object.
 #'@examples
 #'library(daltoolbox)
-#'data(sin_data)
+#'data(tsd)
 #'
 #'#convert to sliding windows
-#'xw <- ts_data(sin_data$y, 10)
+#'xw <- ts_data(tsd$y, 10)
 #'
 #'#data augmentation using flip
 #'augment <- ts_aug_stretch()
@@ -18,7 +18,6 @@
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform
-#'@importFrom daltoolbox adjust_ts_data
 #'@export
 ts_aug_stretch <- function(scale_factor=1.2) {
   obj <- dal_transform()
@@ -44,7 +43,7 @@ transform.ts_aug_stretch <- function(obj, data, ...) {
   if (obj$preserve_data) {
     idx <- c(1:nrow(data), attr(result, "idx"))
     result <- rbind(data, result)
-    result <- daltoolbox::adjust_ts_data(result)
+    result <- adjust_ts_data(result)
     attr(result, "idx") <- idx
   }
   return(result)

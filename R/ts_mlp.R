@@ -10,8 +10,8 @@
 #'@return returns a `ts_mlp` object.
 #'@examples
 #'library(daltoolbox)
-#'data(sin_data)
-#'ts <- ts_data(sin_data$y, 10)
+#'data(tsd)
+#'ts <- ts_data(tsd$y, 10)
 #'ts_head(ts, 3)
 #'
 #'samp <- ts_sample(ts, test_size = 5)
@@ -27,7 +27,6 @@
 #'
 #'ev_test <- evaluate(model, output, prediction)
 #'ev_test
-#'@importFrom daltoolbox ts_regsw
 #'@export
 ts_mlp <- function(preprocess=NA, input_size=NA, size=NA, decay=0.01, maxit=1000) {
   obj <- ts_regsw(preprocess, input_size)
@@ -43,8 +42,7 @@ ts_mlp <- function(preprocess=NA, input_size=NA, size=NA, decay=0.01, maxit=1000
 }
 
 
-#'@import nnet
-#'@importFrom daltoolbox do_fit
+#'@importFrom nnet nnet
 #'@exportS3Method do_fit ts_mlp
 do_fit.ts_mlp <- function(obj, x, y) {
   obj$model <- nnet::nnet(x = x, y = y, size = obj$size, decay=obj$decay, maxit = obj$maxit, linout=TRUE, trace = FALSE)

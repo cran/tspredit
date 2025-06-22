@@ -5,16 +5,16 @@
 #'@examples
 #'# time series with noise
 #'library(daltoolbox)
-#'data(sin_data)
-#'sin_data$y[9] <- 2*sin_data$y[9]
+#'data(tsd)
+#'tsd$y[9] <- 2*tsd$y[9]
 #'
 #'# filter
 #'filter <- ts_fil_wavelet()
-#'filter <- fit(filter, sin_data$y)
-#'y <- transform(filter, sin_data$y)
+#'filter <- fit(filter, tsd$y)
+#'y <- transform(filter, tsd$y)
 #'
 #'# plot
-#'plot_ts_pred(y=sin_data$y, yadj=y)
+#'plot_ts_pred(y=tsd$y, yadj=y)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform
@@ -27,7 +27,6 @@ ts_fil_wavelet <- function(filter = "haar") {
 }
 
 #'@importFrom daltoolbox fit
-#'@importFrom daltoolbox R2.ts
 #'@importFrom wavelets modwt
 #'@importFrom wavelets imodwt
 #'@exportS3Method fit ts_fil_wavelet
