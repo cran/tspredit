@@ -1,6 +1,6 @@
-f0c20c759641123c4e73ad862878360a *DESCRIPTION
+592652ab48c61b8cf49cceb287e410f5 *DESCRIPTION
 7169a99e631e7b354a105505fb228957 *LICENSE
-792b296fa9b120ccf13ed651bd01e8a6 *NAMESPACE
+2aefbb1119569bb36daf3f5ba2bcf85c *NAMESPACE
 a895ba891e6cf08e873fb7cc1157cbe0 *R/data.R
 d3220df72c6784a6009b0ef3cabd01fa *R/ts_arima.R
 7d410964a1899a3bdc849fecc41d4d90 *R/ts_aug_awareness.R
@@ -30,8 +30,8 @@ d9555c7252f658d3e4d956495c9ce517 *R/ts_fil_smooth.R
 92cc5d88029333bc557e14575eaa3937 *R/ts_fil_spline.R
 29c1ed54744f6e82dd42ab77db073cdf *R/ts_fil_wavelet.R
 8cce84bf6ab5bb90029270570b7fec5b *R/ts_fil_winsor.R
+e7c6bdbbeacfadea42b1c6ab980bcb94 *R/ts_integtune.R
 84b6b24b43b79f9ef4f3fcc810764bb6 *R/ts_knn.R
-848b45307e737a638fce1760d3ec3b23 *R/ts_maintune.R
 0cff42dbdf08a1254560878a2ada24fb *R/ts_mlp.R
 cce133e229a8c141418ae48c5a5b1beb *R/ts_norm_an.R
 8d2161a6710cfdd1def28c7f8705dd93 *R/ts_norm_diff.R
@@ -45,8 +45,8 @@ fbbea511ccefde076961b69896858f4b *R/ts_projection.R
 384dbc2442613cf6d3c713fa3afd4775 *R/ts_rf.R
 4e501a4583d51b4638b9983f9da34325 *R/ts_sample.R
 347838a4e58c65ffba6fef345e3ca998 *R/ts_svm.R
-65aa70924fc2feac318dcccd6a8962d5 *R/ts_tune.R
-3b877c840f41abab34816148beb58cbe *README.md
+2e2d2e58d36148ec5775faf4bae24d2c *R/ts_tune.R
+33d483545ba671512a16685dee6f0d74 *README.md
 86885dfdf6f480b068a60f396072a42f *data/fertilizers.RData
 8ce4d5711272b7949be44be0572e79b9 *data/tsd.RData
 6a867ef5b932f2fb93e4674dbdbd6af1 *inst/logo.png
@@ -88,8 +88,8 @@ d21c0391f9f1947313a7dce8f4221084 *man/ts_fil_seas_adj.Rd
 b1b94505c9374d0efff71ca006ecabb7 *man/ts_fil_wavelet.Rd
 1fb8b9a85208a3c634343789a67440bd *man/ts_fil_winsor.Rd
 c300f1fc08eb3b776e7e773168c88740 *man/ts_head.Rd
+12b912183c43d201a7a2ac7cb4b448a2 *man/ts_integtune.Rd
 af8ab22e5fc83a157a31847daef32068 *man/ts_knn.Rd
-9631ef564755cd6358b0629b3f9c92a8 *man/ts_maintune.Rd
 29e3cb5216b61f10cd6dad71b55dfec4 *man/ts_mlp.Rd
 495ffa8a9dd13d1def373b482ab2b953 *man/ts_norm_an.Rd
 f8a5e68b4093e2142260037deece748c *man/ts_norm_diff.Rd
@@ -103,5 +103,5 @@ f5c2c9187370b7b6bfcc3103be11761e *man/ts_projection.Rd
 6bf6068eb8e969282c7150569e45ac01 *man/ts_rf.Rd
 c4185cd3aea67af9ed0c4c77d905ff68 *man/ts_sample.Rd
 1deba012c364c36d5a642754602ba157 *man/ts_svm.Rd
-f9e71b0a69809a156a9e13f72d18fbf5 *man/ts_tune.Rd
+3c8223f0a4e8b11e0c0c9781482fad4a *man/ts_tune.Rd
 e7eb8cd758e5512bac51bc287ac59ed9 *man/tsd.Rd
