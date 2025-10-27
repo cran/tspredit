@@ -1,20 +1,27 @@
-#'@title Augmentation by shrink
-#'@description Time series data augmentation is a technique used to increase the size and diversity of a time series dataset by creating new instances of the original data through transformations or modifications. The goal is to improve the performance of machine learning models trained on time series data by reducing overfitting and improving generalization.
-#'stretch does data augmentation by decreasing the volatility of the time series.
-#'@param scale_factor for shrink
-#'@return a `ts_aug_shrink` object.
+#'@title Augmentation by Shrink
+#'@description Decrease within-window deviation magnitude by a scaling factor
+#' to generate lower-variance variants while preserving the mean.
+#'@param scale_factor Numeric factor used to scale deviations.
+#'@return A `ts_aug_shrink` object.
+#'
+#'@references
+#' - Q. Wen et al. (2021). Time Series Data Augmentation for Deep Learning:
+#'   A Survey. IJCAI Workshop on Time Series.
 #'@examples
-#'library(daltoolbox)
-#'data(tsd)
+#'# Shrink augmentation reduces within-window deviations
+#' # Load package and example dataset
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'#convert to sliding windows
-#'xw <- ts_data(tsd$y, 10)
+#' # Convert to sliding windows and preview
+#' xw <- ts_data(tsd$y, 10)
+#' ts_head(xw)
 #'
-#'#data augmentation using flip
-#'augment <- ts_aug_shrink()
-#'augment <- fit(augment, xw)
-#'xa <- transform(augment, xw)
-#'ts_head(xa)
+#' # Apply shrink augmentation and inspect augmented windows
+#' augment <- ts_aug_shrink()
+#' augment <- fit(augment, xw)
+#' xa <- transform(augment, xw)
+#' ts_head(xa)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform
@@ -31,6 +38,7 @@ ts_aug_shrink <- function(scale_factor = 0.8) {
 #'@exportS3Method transform ts_aug_shrink
 transform.ts_aug_shrink <- function(obj, data, ...) {
   add.ts_aug_shrink <- function(obj, data) {
+    # Reduce deviations from the mean by `scale_factor`
     an <- apply(data, 1, mean)
     x <- data - an
     x <- x * obj$scale_factor
@@ -41,6 +49,7 @@ transform.ts_aug_shrink <- function(obj, data, ...) {
   }
   result <- add.ts_aug_shrink(obj, data)
   if (obj$preserve_data) {
+    # Concatenate original and augmented samples, preserving indices
     idx <- c(1:nrow(data), attr(result, "idx"))
     result <- rbind(data, result)
     result <- adjust_ts_data(result)

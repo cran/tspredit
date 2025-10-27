@@ -1,19 +1,29 @@
-#'@title Augmentation by flip
-#'@description Time series data augmentation is a technique used to increase the size and diversity of a time series dataset by creating new instances of the original data through transformations or modifications. The goal is to improve the performance of machine learning models trained on time series data by reducing overfitting and improving generalization.
-#'Flip mirror the sliding observations relative to the mean of the sliding windows.
-#'@return a `ts_aug_flip` object.
+#'@title Augmentation by Flip
+#'@description Time series augmentation by mirroring sliding-window observations
+#' around their mean to increase diversity and reduce overfitting.
+#'@return A `ts_aug_flip` object.
+#'
+#'@details This transformation preserves the window mean while flipping the
+#' deviations, effectively generating a symmetric variant of the local pattern.
+#'
+#'@references
+#' - Q. Wen et al. (2021). Time Series Data Augmentation for Deep Learning:
+#'   A Survey. IJCAI Workshop on Time Series.
 #'@examples
-#'library(daltoolbox)
-#'data(tsd)
+#'# Flip augmentation around the window mean
+#' # Load package and example dataset
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'#convert to sliding windows
-#'xw <- ts_data(tsd$y, 10)
+#' # Convert to sliding windows and preview
+#' xw <- ts_data(tsd$y, 10)
+#' ts_head(xw)
 #'
-#'#data augmentation using flip
-#'augment <- ts_aug_flip()
-#'augment <- fit(augment, xw)
-#'xa <- transform(augment, xw)
-#'ts_head(xa)
+#' # Apply flip augmentation and inspect augmented windows
+#' augment <- ts_aug_flip()
+#' augment <- fit(augment, xw)
+#' xa <- transform(augment, xw)
+#' ts_head(xa)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform
@@ -29,6 +39,7 @@ ts_aug_flip <- function() {
 #'@exportS3Method transform ts_aug_flip
 transform.ts_aug_flip <- function(obj, data, ...) {
   add.ts_aug_flip <- function(obj, data) {
+    # Mirror around row mean: (mean - (x - mean))
     an <- apply(data, 1, mean)
     x <- data - an
     data <- an - x
@@ -37,6 +48,7 @@ transform.ts_aug_flip <- function(obj, data, ...) {
   }
   result <- add.ts_aug_flip(obj, data)
   if (obj$preserve_data) {
+    # Stack original and augmented rows; preserve indices for traceability
     idx <- c(1:nrow(data), attr(result, "idx"))
     result <- rbind(data, result)
     result <- adjust_ts_data(result)

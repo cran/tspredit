@@ -1,24 +1,33 @@
 #ts_norm_diff
-#'@title Time Series Diff
-#'@description This function calculates the difference between the values of a time series.
+#'@title First Differences
+#'@description Transform a series by first differences to remove level and
+#' highlight changes; normalization is then applied to the differenced series.
 #'@param outliers Indicate outliers transformation class. NULL can avoid outliers removal.
-#'@return returns a `ts_norm_diff` object.
+#'@return A `ts_norm_diff` object.
+#'
+#'@references
+#' Salles, R., Assis, L., Guedes, G., Bezerra, E., Porto, F., Ogasawara, E.
+#' (2017). A framework for benchmarking machine learning methods using linear
+#' models for univariate time series prediction. Proceedings of the
+#' International Joint Conference on Neural Networks (IJCNN).
+#' doi:10.1109/IJCNN.2017.7966139
 #'@examples
-#'# time series to normalize
-#'library(daltoolbox)
-#'data(tsd)
+#'# Differencing + global min–max normalization
+#' # Load package and example data
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'# convert to sliding windows
-#'ts <- ts_data(tsd$y, 10)
-#'ts_head(ts, 3)
-#'summary(ts[,10])
+#'# Convert to sliding windows and preview raw last column
+#' ts <- ts_data(tsd$y, 10)
+#' ts_head(ts, 3)
+#' summary(ts[,10])
 #'
-#'# normalization
-#'preproc <- ts_norm_diff()
-#'preproc <- fit(preproc, ts)
-#'tst <- transform(preproc, ts)
-#'ts_head(tst, 3)
-#'summary(tst[,9])
+#'# Fit differencing preprocessor and transform; note one fewer lag column
+#' preproc <- ts_norm_diff()
+#' preproc <- fit(preproc, ts)
+#' tst <- transform(preproc, ts)
+#' ts_head(tst, 3)
+#' summary(tst[,9])
 #'@importFrom daltoolbox outliers_boxplot
 #'@export
 ts_norm_diff <- function(outliers = outliers_boxplot()) {

@@ -1,19 +1,29 @@
 #'@title FFT Filter
-#'@description FFT Filter
-#'@return a `ts_fil_fft` object.
+#'@description Frequency-domain smoothing using the Fast Fourier Transform
+#' (FFT) to attenuate high-frequency components.
+#'
+#'@return A `ts_fil_fft` object.
+#'
+#'@details The implementation estimates a cutoff based on spectral statistics
+#' and reconstructs the series from dominant frequencies.
+#'
+#'@references
+#' - J. W. Cooley and J. W. Tukey (1965). An algorithm for the machine
+#'   calculation of complex Fourier series. Math. Comput.
 #'@examples
-#'# time series with noise
-#'library(daltoolbox)
-#'data(tsd)
-#'tsd$y[9] <- 2*tsd$y[9]
+#'# Frequency-domain smoothing via FFT cutoff
+#' # Load package and example data
+#' library(daltoolbox)
+#' data(tsd)
+#' tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
 #'
-#'# filter
-#'filter <- ts_fil_fft()
-#'filter <- fit(filter, tsd$y)
-#'y <- transform(filter, tsd$y)
+#' # Fit FFT-based filter and reconstruct without high frequencies
+#' filter <- ts_fil_fft()
+#' filter <- fit(filter, tsd$y)
+#' y <- transform(filter, tsd$y)
 #'
-#'# plot
-#'plot_ts_pred(y=tsd$y, yadj=y)
+#' # Compare original vs frequency-smoothed series
+#' plot_ts_pred(y = tsd$y, yadj = y)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform
@@ -25,6 +35,7 @@ ts_fil_fft <- function() {
 }
 
 compute_cut_index <- function(freqs) {
+  # Initial cutoff at dominant frequency; adjust by threshold if spectrum varies
   cutindex <- which.max(freqs)
   if (min(freqs) != max(freqs)) {
     threshold <- mean(freqs) + 2.968 * sd(freqs)

@@ -2,27 +2,28 @@
 % Please edit documentation in R/ts_fil_none.R
 \name{ts_fil_none}
 \alias{ts_fil_none}
-\title{no filter}
+\title{No Filter}
 \usage{
 ts_fil_none()
 }
 \value{
-a \code{ts_fil_none} object.
+A \code{ts_fil_none} object.
 }
 \description{
-Does not make data filter
+Identity filter that returns the original series unchanged.
 }
 \examples{
-# time series with noise
+# Identity filter (returns original series)
+# Load package and example series
 library(daltoolbox)
 data(tsd)
-tsd$y[9] <- 2*tsd$y[9]
+tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier for comparison
 
-# filter
+# Fit identity filter and transform (no change expected)
 filter <- ts_fil_none()
 filter <- fit(filter, tsd$y)
 y <- transform(filter, tsd$y)
 
-# plot
-plot_ts_pred(y=tsd$y, yadj=y)
+# Plot original vs (identical) filtered series
+plot_ts_pred(y = tsd$y, yadj = y)
 }

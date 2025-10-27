@@ -1,20 +1,28 @@
-#'@title Augmentation by awareness
-#'@description Time series data augmentation is a technique used to increase the size and diversity of a time series dataset by creating new instances of the original data through transformations or modifications. The goal is to improve the performance of machine learning models trained on time series data by reducing overfitting and improving generalization.
-#'Awareness reinforce recent data preferably.
-#'@param factor increase factor for data augmentation
-#'@return a `ts_aug_awareness` object.
+#'@title Augmentation by Awareness
+#'@description Bias the augmentation to emphasize more recent points in each
+#' window (recency awareness), increasing their contribution to the augmented
+#' sample.
+#'@param factor Numeric factor controlling the recency weighting.
+#'@return A `ts_aug_awareness` object.
+#'
+#'@references
+#' - Q. Wen et al. (2021). Time Series Data Augmentation for Deep Learning:
+#'   A Survey. IJCAI Workshop on Time Series.
 #'@examples
-#'library(daltoolbox)
-#'data(tsd)
+#'# Recency-aware augmentation over sliding windows
+#' # Load package and example dataset
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'#convert to sliding windows
-#'xw <- ts_data(tsd$y, 10)
+#' # Convert to 10-lag sliding windows and preview
+#' xw <- ts_data(tsd$y, 10)
+#' ts_head(xw)
 #'
-#'#data augmentation using awareness
-#'augment <- ts_aug_awareness()
-#'augment <- fit(augment, xw)
-#'xa <- transform(augment, xw)
-#'ts_head(xa)
+#' # Apply awareness augmentation (bias toward recent rows)
+#' augment <- ts_aug_awareness()
+#' augment <- fit(augment, xw)
+#' xa <- transform(augment, xw)
+#' ts_head(xa)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform
@@ -33,6 +41,7 @@ ts_aug_awareness <- function(factor = 1) {
 #'@exportS3Method transform ts_aug_awareness
 transform.ts_aug_awareness <- function(obj, data, ...) {
   noise.parameters <- function(obj, data) {
+    # Estimate within-window std for noise amplitude
     an <- apply(data, 1, mean)
     x <- data - an
     obj$xsd <- stats::sd(x)
@@ -40,6 +49,7 @@ transform.ts_aug_awareness <- function(obj, data, ...) {
   }
 
   add.noise <- function(obj, data) {
+    # Add Gaussian noise but keep last (target) column intact
     x <- stats::rnorm(length(data), mean = 0, sd = obj$xsd)
     x <- matrix(x, nrow=nrow(data), ncol=ncol(data))
     x[,ncol(data)] <- 0
@@ -47,6 +57,7 @@ transform.ts_aug_awareness <- function(obj, data, ...) {
     return(data)
   }
   filter.data <- function(data) {
+    # Preferentially sample recent rows via exponential distribution
     n <- nrow(data)
     rate <- 10/n
     i <- ceiling(stats::rexp(10*n, rate))
@@ -61,6 +72,7 @@ transform.ts_aug_awareness <- function(obj, data, ...) {
   ndata <- add.noise(obj, data[i,])
   result <- ndata
   attr(result, "idx") <-  i
+  # Merge original and augmented data and keep source indices
   idx <- c(1:nrow(data), attr(result, "idx"))
   result <- rbind(data, result)
   result <- adjust_ts_data(result)

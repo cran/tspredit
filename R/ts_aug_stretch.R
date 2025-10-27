@@ -1,20 +1,27 @@
-#'@title Augmentation by stretch
-#'@description Time series data augmentation is a technique used to increase the size and diversity of a time series dataset by creating new instances of the original data through transformations or modifications. The goal is to improve the performance of machine learning models trained on time series data by reducing overfitting and improving generalization.
-#'stretch does data augmentation by increasing the volatility of the time series.
-#'@param scale_factor for stretch
-#'@return a `ts_aug_stretch` object.
+#'@title Augmentation by Stretch
+#'@description Increase within-window deviation magnitude by a scaling factor
+#' to produce higher-variance variants.
+#'@param scale_factor Numeric factor used to scale deviations.
+#'@return A `ts_aug_stretch` object.
+#'
+#'@references
+#' - Q. Wen et al. (2021). Time Series Data Augmentation for Deep Learning:
+#'   A Survey. IJCAI Workshop on Time Series.
 #'@examples
-#'library(daltoolbox)
-#'data(tsd)
+#'# Stretch augmentation increases within-window deviations
+#' # Load package and example dataset
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'#convert to sliding windows
-#'xw <- ts_data(tsd$y, 10)
+#' # Convert to sliding windows and preview
+#' xw <- ts_data(tsd$y, 10)
+#' ts_head(xw)
 #'
-#'#data augmentation using flip
-#'augment <- ts_aug_stretch()
-#'augment <- fit(augment, xw)
-#'xa <- transform(augment, xw)
-#'ts_head(xa)
+#' # Apply stretch augmentation and inspect augmented windows
+#' augment <- ts_aug_stretch()
+#' augment <- fit(augment, xw)
+#' xa <- transform(augment, xw)
+#' ts_head(xa)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform
@@ -31,6 +38,7 @@ ts_aug_stretch <- function(scale_factor=1.2) {
 #'@exportS3Method transform ts_aug_stretch
 transform.ts_aug_stretch <- function(obj, data, ...) {
   add.ts_aug_stretch <- function(obj, data) {
+    # Amplify deviations from the mean by `scale_factor`
     an <- apply(data, 1, mean)
     x <- data - an
     x <- x * obj$scale_factor
@@ -41,6 +49,7 @@ transform.ts_aug_stretch <- function(obj, data, ...) {
   }
   result <- add.ts_aug_stretch(obj, data)
   if (obj$preserve_data) {
+    # Concatenate original and augmented samples, preserving indices
     idx <- c(1:nrow(data), attr(result, "idx"))
     result <- rbind(data, result)
     result <- adjust_ts_data(result)

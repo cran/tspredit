@@ -11,22 +11,30 @@ ts_fil_seas_adj(frequency = NULL)
 It can be configured when the frequency of the time series is known.}
 }
 \value{
-a \code{ts_fil_seas_adj} object.
+A \code{ts_fil_seas_adj} object.
 }
 \description{
-Removes the seasonal component from the time series without affecting the other components.
+Remove the seasonal component from a time series while preserving
+level and trend, using a state-space/BATS approach.
 }
 \examples{
-# time series with noise
+# Seasonal adjustment using BATS at known frequency
+# Load package and example data
 library(daltoolbox)
 data(tsd)
-tsd$y[9] <- 2*tsd$y[9]
+tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier (illustrative)
 
-# filter
+# Fit seasonal adjustment (set frequency if known) and transform
 filter <- ts_fil_seas_adj(frequency = 26)
 filter <- fit(filter, tsd$y)
 y <- transform(filter, tsd$y)
 
-# plot
-plot_ts_pred(y=tsd$y, yadj=y)
+# Plot original vs seasonally adjusted series
+plot_ts_pred(y = tsd$y, yadj = y)
+}
+\references{
+\itemize{
+\item R. J. Hyndman and G. Athanasopoulos (2021). Forecasting: Principles and
+Practice (3rd ed). OTexts. (BATS/seasonal adjustment)
+}
 }

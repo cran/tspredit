@@ -1,35 +1,49 @@
 #'@title Time Series Integrated Tune
-#'@description Time Series Tune
-#'@param input_size input size for machine learning model
-#'@param base_model base model for tuning
-#'@param folds number of folds for cross-validation
-#'@param ranges a list of hyperparameter ranges to explore
-#'@param preprocess list of preprocessing methods
-#'@param augment data augmentation method
-#'@return a `ts_integtune` object.
+#'@description Integrated tuning over input sizes, preprocessing, augmentation,
+#' and model hyperparameters for time series.
+#'
+#'@param input_size Integer vector. Candidate input window sizes.
+#'@param base_model Base model object for tuning.
+#'@param folds Integer. Number of cross-validation folds.
+#'@param ranges Named list of hyperparameter ranges to explore.
+#'@param preprocess List of preprocessing objects to compare.
+#'@param augment List of augmentation objects to apply during training.
+#'@return A `ts_integtune` object.
+#'
+#'@references
+#' Salles, R., Pacitti, E., Bezerra, E., Marques, C., Pacheco, C., Oliveira,
+#' C., Porto, F., Ogasawara, E. (2023). TSPredIT: Integrated Tuning of Data
+#' Preprocessing and Time Series Prediction Models. Lecture Notes in Computer
+#' Science.
 #'@examples
-#'library(daltoolbox)
-#'data(tsd)
-#'ts <- ts_data(tsd$y, 10)
+#' # Integrated search over input size, preprocessing and model hyperparameters
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'samp <- ts_sample(ts, test_size = 5)
-#'io_train <- ts_projection(samp$train)
-#'io_test <- ts_projection(samp$test)
+#' # Build windows and split into train/test, then project to (X, y)
+#' ts <- ts_data(tsd$y, 10)
+#' samp <- ts_sample(ts, test_size = 5)
+#' io_train <- ts_projection(samp$train)
+#' io_test <- ts_projection(samp$test)
 #'
-#'tune <- ts_integtune(input_size=c(3:5), base_model = ts_elm(),
-#' ranges = list(nhid = 1:5, actfun=c('purelin')),
-#' preprocess = list(ts_norm_gminmax()))
+#' # Configure integrated tuning: ranges for input_size, ELM (nhid, actfun), and preprocessors
+#' tune <- ts_integtune(
+#'   input_size = 3:5,
+#'   base_model = ts_elm(),
+#'   ranges = list(nhid = 1:5, actfun = c('purelin')),
+#'   preprocess = list(ts_norm_gminmax())
+#' )
 #'
+#' # Run search; augmentation (if provided) is applied during training internally
+#' model <- fit(tune, x = io_train$input, y = io_train$output)
 #'
-#'# Generic model tunning
-#'model <- fit(tune, x=io_train$input, y=io_train$output)
+#' # Forecast and evaluate on the held-out window
+#' prediction <- predict(model, x = io_test$input[1,], steps_ahead = 5)
+#' prediction <- as.vector(prediction)
+#' output <- as.vector(io_test$output)
 #'
-#'prediction <- predict(model, x=io_test$input[1,], steps_ahead=5)
-#'prediction <- as.vector(prediction)
-#'output <- as.vector(io_test$output)
-#'
-#'ev_test <- evaluate(model, output, prediction)
-#'ev_test
+#' ev_test <- evaluate(model, output, prediction)
+#' ev_test
 #'@importFrom daltoolbox dal_tune
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox select_hyper
@@ -55,6 +69,7 @@ fit.ts_integtune <- function(obj, x, y, ...) {
   obj <- prepare_ranges(obj, obj$ranges)
   ranges <- obj$ranges
 
+  # Pre-fit augmentation operators on full data for reproducibility
   obj <- fit_augment(obj, x, y)
 
   n <- nrow(ranges)
@@ -71,6 +86,7 @@ fit.ts_integtune <- function(obj, x, y, ...) {
       for (i in 1:n) {
         err <- tryCatch(
           {
+            # Build, fit, and score an integrated pipeline (preprocess + augment + model)
             model <- build_model(obj, ranges[i,], x[tt$train$i,], y[tt$train$i,])
             error[i] <- evaluate_error(model, tt$test$i, x, y)
             ""
@@ -159,6 +175,7 @@ build_model <- function(obj, ranges, x, y) {
   model <- daltoolbox::set_params(model, ranges)
   model$preprocess <- get_preprocess(obj, ranges$preprocess)
   augment <- get_augment(obj, ranges$augment)
+  # Augment training data before fitting model
   data <- augment_data(augment, x, y)
   model <- fit(model, data$x, data$y)
   attr(model, "augment") <- augment
@@ -186,6 +203,7 @@ evaluate_error <- function(model, i, x, y) {
   x <- x[i,]
   y <- as.vector(y[i,])
   prediction <- as.vector(stats::predict(model, x))
+  # Score MSE on held-out fold
   error <- daltoolbox::evaluate(model, y, prediction)$mse
   return(error)
 }

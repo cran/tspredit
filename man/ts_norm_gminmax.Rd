@@ -2,7 +2,7 @@
 % Please edit documentation in R/ts_norm_gminmax.R
 \name{ts_norm_gminmax}
 \alias{ts_norm_gminmax}
-\title{Time Series Global Min-Max}
+\title{Global Min–Max Normalization}
 \usage{
 ts_norm_gminmax(outliers = outliers_boxplot())
 }
@@ -10,25 +10,36 @@ ts_norm_gminmax(outliers = outliers_boxplot())
 \item{outliers}{Indicate outliers transformation class. NULL can avoid outliers removal.}
 }
 \value{
-returns a \code{ts_norm_gminmax} object.
+A \code{ts_norm_gminmax} object.
 }
 \description{
-Rescales data, so the minimum value is mapped to 0 and the maximum value is mapped to 1.
+Rescale values so the global minimum maps to 0 and the global
+maximum maps to 1 over the training set.
+}
+\details{
+The same scaling is applied to inputs and inverted on predictions
+via \code{inverse_transform}.
 }
 \examples{
-# time series to normalize
+# Global min–max normalization across the full training set
+# Load package and example data
 library(daltoolbox)
 data(tsd)
 
-# convert to sliding windows
+# Build 10-lag windows and preview raw scale
 ts <- ts_data(tsd$y, 10)
 ts_head(ts, 3)
 summary(ts[,10])
 
-# normalization
+# Fit global min–max and transform; inspect post-scale values
 preproc <- ts_norm_gminmax()
 preproc <- fit(preproc, ts)
 tst <- transform(preproc, ts)
 ts_head(tst, 3)
 summary(tst[,10])
+}
+\references{
+Ogasawara, E., Murta, L., Zimbrão, G., Mattoso, M. (2009). Neural networks
+cartridges for data mining on time series. Proceedings of the International
+Joint Conference on Neural Networks (IJCNN). doi:10.1109/IJCNN.2009.5178615
 }

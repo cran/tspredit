@@ -1,19 +1,29 @@
-#'@title Augmentation by wormhole
-#'@description Time series data augmentation is a technique used to increase the size and diversity of a time series dataset by creating new instances of the original data through transformations or modifications. The goal is to improve the performance of machine learning models trained on time series data by reducing overfitting and improving generalization.
-#'Wormhole does data augmentation by removing lagged terms and adding old terms.
-#'@return a `ts_aug_wormhole` object.
+#'@title Augmentation by Wormhole
+#'@description Generate augmented windows by selectively replacing lag terms
+#' with older lagged values, creating plausible alternative trajectories.
+#'@return A `ts_aug_wormhole` object.
+#'
+#'@details This combinatorial replacement preserves overall scale while
+#' introducing temporal permutations of lag content.
+#'
+#'@references
+#' - Q. Wen et al. (2021). Time Series Data Augmentation for Deep Learning:
+#'   A Survey. IJCAI Workshop on Time Series.
 #'@examples
-#'library(daltoolbox)
-#'data(tsd)
+#'# Wormhole augmentation replaces some lags with older values
+#' # Load package and example dataset
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'#convert to sliding windows
-#'xw <- ts_data(tsd$y, 10)
+#' # Convert to sliding windows and preview
+#' xw <- ts_data(tsd$y, 10)
+#' ts_head(xw)
 #'
-#'#data augmentation using flip
-#'augment <- ts_aug_wormhole()
-#'augment <- fit(augment, xw)
-#'xa <- transform(augment, xw)
-#'ts_head(xa)
+#' # Apply wormhole augmentation and inspect augmented windows
+#' augment <- ts_aug_wormhole()
+#' augment <- fit(augment, xw)
+#' xa <- transform(augment, xw)
+#' ts_head(xa)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform

@@ -1,20 +1,27 @@
-#'@title Augmentation by awareness smooth
-#'@description Time series data augmentation is a technique used to increase the size and diversity of a time series dataset by creating new instances of the original data through transformations or modifications. The goal is to improve the performance of machine learning models trained on time series data by reducing overfitting and improving generalization.
-#'Awareness Smooth reinforce recent data preferably. It also smooths noise data.
-#'@param factor increase factor for data augmentation
-#'@return a `ts_aug_awaresmooth` object.
+#'@title Augmentation by Awareness Smooth
+#'@description Recency-aware augmentation that also progressively smooths noise
+#' before applying the weighting, producing cleaner augmented samples.
+#'@param factor Numeric factor controlling the recency weighting.
+#'@return A `ts_aug_awaresmooth` object.
+#'
+#'@references
+#' - Q. Wen et al. (2021). Time Series Data Augmentation for Deep Learning:
+#'   A Survey. IJCAI Workshop on Time Series.
 #'@examples
-#'library(daltoolbox)
-#'data(tsd)
+#'# Recency-aware augmentation with progressive smoothing
+#' # Load package and example dataset
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'#convert to sliding windows
-#'xw <- ts_data(tsd$y, 10)
+#' # Convert to 10-lag sliding windows and preview
+#' xw <- ts_data(tsd$y, 10)
+#' ts_head(xw)
 #'
-#'#data augmentation using awareness
-#'augment <- ts_aug_awaresmooth()
-#'augment <- fit(augment, xw)
-#'xa <- transform(augment, xw)
-#'ts_head(xa)
+#' # Apply awareness+smooth augmentation and inspect result
+#' augment <- ts_aug_awaresmooth()
+#' augment <- fit(augment, xw)
+#' xa <- transform(augment, xw)
+#' ts_head(xa)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform
@@ -40,6 +47,7 @@ transform.ts_aug_awaresmooth <- function(obj, data, ...) {
       diff <- serie[2:n] - serie[1:(n-1)]
 
       names(diff) <- 1:length(diff)
+      # Detect large jumps via boxplot (IQR) and iteratively smooth
       bp <- graphics::boxplot(diff, plot = FALSE)
       j <- as.integer(names(bp$out))
 
@@ -69,6 +77,7 @@ transform.ts_aug_awaresmooth <- function(obj, data, ...) {
     }
 
     add_noise <- function(input, data) {
+      # Estimate noise scale from original data, not the smoothed input
       an <- apply(data, 1, mean)
       x <- data - an
       xsd <- stats::sd(x)
@@ -90,6 +99,7 @@ transform.ts_aug_awaresmooth <- function(obj, data, ...) {
     return(result)
   }
 
+  # Smooth each sliding window serialized as a single timeline
   n <- ncol(data)
   x <- c(as.vector(data[1,1:(n-1)]), as.vector(data[,n]))
   xd <- progressive_smoothing(x)
@@ -97,6 +107,7 @@ transform.ts_aug_awaresmooth <- function(obj, data, ...) {
 
   result <- transform_ts_aug_awareness(result, obj$factor)
 
+  # Keep indices of augmented samples for traceability
   idx <- attr(result, "idx")
   return(result)
 }

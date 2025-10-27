@@ -2,7 +2,7 @@
 % Please edit documentation in R/ts_norm_diff.R
 \name{ts_norm_diff}
 \alias{ts_norm_diff}
-\title{Time Series Diff}
+\title{First Differences}
 \usage{
 ts_norm_diff(outliers = outliers_boxplot())
 }
@@ -10,25 +10,34 @@ ts_norm_diff(outliers = outliers_boxplot())
 \item{outliers}{Indicate outliers transformation class. NULL can avoid outliers removal.}
 }
 \value{
-returns a \code{ts_norm_diff} object.
+A \code{ts_norm_diff} object.
 }
 \description{
-This function calculates the difference between the values of a time series.
+Transform a series by first differences to remove level and
+highlight changes; normalization is then applied to the differenced series.
 }
 \examples{
-# time series to normalize
+# Differencing + global min–max normalization
+# Load package and example data
 library(daltoolbox)
 data(tsd)
 
-# convert to sliding windows
+# Convert to sliding windows and preview raw last column
 ts <- ts_data(tsd$y, 10)
 ts_head(ts, 3)
 summary(ts[,10])
 
-# normalization
+# Fit differencing preprocessor and transform; note one fewer lag column
 preproc <- ts_norm_diff()
 preproc <- fit(preproc, ts)
 tst <- transform(preproc, ts)
 ts_head(tst, 3)
 summary(tst[,9])
+}
+\references{
+Salles, R., Assis, L., Guedes, G., Bezerra, E., Porto, F., Ogasawara, E.
+(2017). A framework for benchmarking machine learning methods using linear
+models for univariate time series prediction. Proceedings of the
+International Joint Conference on Neural Networks (IJCNN).
+doi:10.1109/IJCNN.2017.7966139
 }

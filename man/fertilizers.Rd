@@ -14,7 +14,8 @@ This dataset was obtained from the MASS library.
 data(fertilizers)
 }
 \description{
-List of Brazilian fertilizers consumption of N, P2O5, K2O.
+List of Brazilian fertilizer consumption series for N, P2O5, K2O.
+All series are numeric and ordered by time.
 \itemize{
 \item brazil_n: nitrogen consumption from 1961 to 2020.
 \item brazil_p2o5: phosphate consumption from 1961 to 2020.
@@ -22,10 +23,11 @@ List of Brazilian fertilizers consumption of N, P2O5, K2O.
 }
 }
 \examples{
+# Load dataset and preview one of the series (nitrogen)
 data(fertilizers)
 head(fertilizers$brazil_n)
 }
 \references{
-International Fertilizer Association (IFA): http://www.fertilizer.org.
+International Fertilizer Association (IFA): https://www.fertilizer.org
 }
 \keyword{datasets}

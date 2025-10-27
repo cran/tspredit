@@ -9,23 +9,33 @@ ts_fil_spline(spar = NULL)
 \arguments{
 \item{spar}{smoothing parameter. When spar is specified, the coefficient
 of the integral of the squared second derivative in the fitting criterion (penalized log-likelihood)
-is a monotone function of spar.
-#'@return a \code{ts_fil_spline} object.}
+is a monotone function of spar.}
+}
+\value{
+A \code{ts_fil_spline} object.
 }
 \description{
-Fits a cubic smoothing spline to a time series.
+Fit a cubic smoothing spline to a time series for smooth trend
+extraction with a tunable roughness penalty.
 }
 \examples{
-# time series with noise
+# Smoothing splines with adjustable roughness penalty
+# Load package and example data
 library(daltoolbox)
 data(tsd)
-tsd$y[9] <- 2*tsd$y[9]
+tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
 
-# filter
+# Fit spline smoother (spar controls smoothness) and transform
 filter <- ts_fil_spline(spar = 0.5)
 filter <- fit(filter, tsd$y)
 y <- transform(filter, tsd$y)
 
-# plot
-plot_ts_pred(y=tsd$y, yadj=y)
+# Compare original vs smoothed series
+plot_ts_pred(y = tsd$y, yadj = y)
+}
+\references{
+\itemize{
+\item P. Craven and G. Wahba (1978). Smoothing noisy data with spline functions.
+Numerische Mathematik.
+}
 }

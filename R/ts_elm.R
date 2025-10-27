@@ -1,37 +1,56 @@
 #'@title ELM
-#'@description Creates a time series prediction object that
-#' uses the Extreme Learning Machine (ELM).
-#' It wraps the elmNNRcpp library.
-#'@param preprocess normalization
-#'@param input_size input size for machine learning model
-#'@param nhid ensemble size
-#'@param actfun defines the type to use, possible values: 'sig',
-#' 'radbas', 'tribas', 'relu', 'purelin' (default).
-#'@return returns a `ts_elm` object.
+#'@description Create a time series prediction object that uses
+#' Extreme Learning Machine (ELM) regression.
+#'
+#' It wraps the `elmNNRcpp` package to train single-hidden-layer networks with
+#' randomly initialized hidden weights and closed-form output weights.
+#'
+#'@details ELMs are efficient to train and can perform well with appropriate
+#' hidden size and activation choice. Consider normalizing inputs and tuning
+#' `nhid` and the activation function.
+#'
+#'@param preprocess Normalization preprocessor (e.g., `ts_norm_gminmax()`).
+#'@param input_size Integer. Number of lagged inputs used by the model.
+#'@param nhid Integer. Hidden layer size.
+#'@param actfun Character. One of 'sig', 'radbas', 'tribas', 'relu', 'purelin'.
+#'@return A `ts_elm` object (S3) inheriting from `ts_regsw`.
+#'
+#'@references
+#' - G.-B. Huang, Q.-Y. Zhu, and C.-K. Siew (2006). Extreme Learning Machine:
+#'   Theory and Applications. Neurocomputing, 70(1–3), 489–501.
 #'@examples
-#'library(daltoolbox)
-#'data(tsd)
-#'ts <- ts_data(tsd$y, 10)
-#'ts_head(ts, 3)
+#'# Example: ELM with sliding-window inputs
+#' # Load package and toy dataset
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'samp <- ts_sample(ts, test_size = 5)
-#'io_train <- ts_projection(samp$train)
-#'io_test <- ts_projection(samp$test)
+#' # Create sliding windows of length 10 (t9 ... t0)
+#' ts <- ts_data(tsd$y, 10)
+#' ts_head(ts, 3)
 #'
-#'model <- ts_elm(ts_norm_gminmax(), input_size=4, nhid=3, actfun="purelin")
-#'model <- fit(model, x=io_train$input, y=io_train$output)
+#' # Split last 5 rows as test set
+#' samp <- ts_sample(ts, test_size = 5)
+#' # Project to inputs (X) and outputs (y)
+#' io_train <- ts_projection(samp$train)
+#' io_test <- ts_projection(samp$test)
 #'
-#'prediction <- predict(model, x=io_test$input[1,], steps_ahead=5)
-#'prediction <- as.vector(prediction)
-#'output <- as.vector(io_test$output)
+#' # Define ELM with global min-max normalization and fit
+#' model <- ts_elm(ts_norm_gminmax(), input_size = 4, nhid = 3, actfun = "purelin")
+#' model <- fit(model, x = io_train$input, y = io_train$output)
 #'
-#'ev_test <- evaluate(model, output, prediction)
-#'ev_test
+#' # Forecast 5 steps ahead starting from the last known window
+#' prediction <- predict(model, x = io_test$input[1,], steps_ahead = 5)
+#' prediction <- as.vector(prediction)
+#' output <- as.vector(io_test$output)
+#'
+#' # Evaluate forecast error on the test horizon
+#' ev_test <- evaluate(model, output, prediction)
+#' ev_test
 #'@export
 ts_elm <- function(preprocess=NA, input_size=NA, nhid=NA, actfun='purelin') {
   obj <- ts_regsw(preprocess, input_size)
   if (is.na(nhid))
-    nhid <- input_size/3
+    nhid <- input_size/3  # heuristic hidden size
   obj$nhid <- nhid
   obj$actfun <- as.character(actfun)
 
@@ -41,16 +60,21 @@ ts_elm <- function(preprocess=NA, input_size=NA, nhid=NA, actfun='purelin') {
 
 #'@importFrom elmNNRcpp elm_train
 #'@exportS3Method do_fit ts_elm
+#'@inheritParams do_fit
+#'@return A fitted `ts_elm` object with trained ELM model.
 do_fit.ts_elm <- function(obj, x, y) {
+  # Train ELM with random hidden layer and closed-form output weights
   obj$model <- elmNNRcpp::elm_train(x, y, nhid = obj$nhid, actfun = obj$actfun, init_weights = "uniform_positive", bias = FALSE, verbose = FALSE)
   return(obj)
 }
 
 #'@importFrom elmNNRcpp elm_predict
 #'@exportS3Method do_predict ts_elm
+#'@inheritParams do_predict
+#'@return Numeric vector with predictions.
 do_predict.ts_elm <- function(obj, x) {
   if (is.data.frame(x))
-    x <- as.matrix(x)
+    x <- as.matrix(x)  # elm_predict expects a matrix
   prediction <- elmNNRcpp::elm_predict(obj$model, x)
   return(prediction)
 }

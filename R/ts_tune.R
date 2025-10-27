@@ -1,34 +1,54 @@
 #'@title Time Series Tune
-#'@description Creates a `ts_tune` object for tuning hyperparameters of a time series model.
-#'This function sets up a tuning process for the specified base model by exploring different
-#'configurations of hyperparameters using cross-validation.
-#'@param input_size input size for machine learning model
-#'@param base_model base model for tuning
-#'@param folds number of folds for cross-validation
-#'@param ranges a list of hyperparameter ranges to explore
-#'@return returns a `ts_tune` object
+#'@description Create a `ts_tune` object for hyperparameter tuning of a
+#' time series model.
+#'
+#' Sets up a cross-validated search over hyperparameter ranges and input sizes
+#' for a base model. Results include the evaluated configurations and the
+#' selected best configuration.
+#'
+#'@param input_size Integer vector. Candidate input window sizes.
+#'@param base_model Base model object to tune (e.g., `ts_mlp()`).
+#'@param folds Integer. Number of cross-validation folds.
+#'@param ranges Named list of hyperparameter ranges to explore.
+#'@return A `ts_tune` object.
+#'
+#'@references
+#' - R. Kohavi (1995). A study of cross-validation and bootstrap for accuracy
+#'   estimation and model selection. IJCAI.
+#' - Salles, R., Pacitti, E., Bezerra, E., Marques, C., Pacheco, C., Oliveira,
+#'   C., Porto, F., Ogasawara, E. (2023). TSPredIT: Integrated Tuning of Data
+#'   Preprocessing and Time Series Prediction Models. Lecture Notes in Computer
+#'   Science.
 #'@examples
-#'library(daltoolbox)
-#'data(tsd)
-#'ts <- ts_data(tsd$y, 10)
-#'ts_head(ts, 3)
+#'# Example: grid search over input_size and ELM hyperparameters
+#' # Load library and example data
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'samp <- ts_sample(ts, test_size = 5)
-#'io_train <- ts_projection(samp$train)
-#'io_test <- ts_projection(samp$test)
+#' # Prepare 10-lag windows and split into train/test
+#' ts <- ts_data(tsd$y, 10)
+#' ts_head(ts, 3)
+#' samp <- ts_sample(ts, test_size = 5)
+#' io_train <- ts_projection(samp$train)
+#' io_test <- ts_projection(samp$test)
 #'
-#'tune <- ts_tune(input_size=c(3:5), base_model = ts_elm(ts_norm_gminmax()),
-#'     ranges = list(nhid = 1:5, actfun=c('purelin')))
+#' # Define tuning: vary input_size and ELM hyperparameters (nhid, actfun)
+#' tune <- ts_tune(
+#'   input_size = 3:5,
+#'   base_model = ts_elm(ts_norm_gminmax()),
+#'   ranges = list(nhid = 1:5, actfun = c('purelin'))
+#' )
 #'
-#'# Generic model tunning
-#'model <- fit(tune, x=io_train$input, y=io_train$output)
+#' # Run CV-based search and get the best fitted model
+#' model <- fit(tune, x = io_train$input, y = io_train$output)
 #'
-#'prediction <- predict(model, x=io_test$input[1,], steps_ahead=5)
-#'prediction <- as.vector(prediction)
-#'output <- as.vector(io_test$output)
+#' # Forecast and evaluate on the held-out horizon
+#' prediction <- predict(model, x = io_test$input[1,], steps_ahead = 5)
+#' prediction <- as.vector(prediction)
+#' output <- as.vector(io_test$output)
 #'
-#'ev_test <- evaluate(model, output, prediction)
-#'ev_test
+#' ev_test <- evaluate(model, output, prediction)
+#' ev_test
 #'@export
 ts_tune <- function(input_size, base_model, folds=10, ranges=NULL) {
   obj <- dal_tune(base_model, folds, ranges)
@@ -46,6 +66,7 @@ fit.ts_tune <- function(obj, x, y, ...) {
     model <- obj$base_model
     model$input_size <- ranges$input_size
     model <- set_params(model, ranges)
+    # Fit candidate model on training split
     model <- fit(model, x, y)
     return(model)
   }
@@ -58,6 +79,7 @@ fit.ts_tune <- function(obj, x, y, ...) {
   }
 
   evaluate_error <- function(model, i, x, y) {
+    # Compute MSE on held-out fold indices
     x <- x[i,]
     y <- as.vector(y[i,])
     prediction <- as.vector(stats::predict(model, x))
@@ -82,6 +104,7 @@ fit.ts_tune <- function(obj, x, y, ...) {
       for (i in 1:n) {
         err <- tryCatch(
           {
+            # Fit and evaluate one configuration
             model <- build_model(obj, ranges[i,], x[tt$train$i,], y[tt$train$i,])
             error[i] <- evaluate_error(model, tt$test$i, x, y)
             ""

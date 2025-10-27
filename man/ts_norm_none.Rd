@@ -2,24 +2,27 @@
 % Please edit documentation in R/ts_norm_none.R
 \name{ts_norm_none}
 \alias{ts_norm_none}
-\title{no normalization}
+\title{No Normalization}
 \usage{
 ts_norm_none()
 }
 \value{
-a \code{ts_norm_none} object.
+A \code{ts_norm_none} object.
 }
 \description{
-Does not make data normalization.
+Identity transform that leaves data unchanged but aligns with
+the pre/post-processing interface.
 }
 \examples{
+# Identity normalization (no scaling applied)
+# Load package and example data
 library(daltoolbox)
 data(tsd)
 
-#convert to sliding windows
+# Convert to sliding windows
 xw <- ts_data(tsd$y, 10)
 
-#no data normalization
+# No data normalization — transform returns inputs unchanged
 normalize <- ts_norm_none()
 normalize <- fit(normalize, xw)
 xa <- transform(normalize, xw)

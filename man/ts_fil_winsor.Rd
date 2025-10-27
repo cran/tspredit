@@ -7,24 +7,30 @@
 ts_fil_winsor()
 }
 \value{
-a \code{ts_fil_winsor} obj.
+A \code{ts_fil_winsor} object.
 }
 \description{
-This code implements the Winsorization technique on a time series.
-Winsorization is a statistical method used to handle extreme values in a time series
-by replacing them with values closer to the center of the distribution.
+Apply Winsorization to limit extreme values by replacing them
+with nearer order statistics, reducing the influence of outliers.
 }
 \examples{
-# time series with noise
+# Winsorization: cap extreme values to reduce outlier impact
+# Load package and example data
 library(daltoolbox)
 data(tsd)
-tsd$y[9] <- 2*tsd$y[9]
+tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
 
-# filter
+# Fit Winsor filter and transform series
 filter <- ts_fil_winsor()
 filter <- fit(filter, tsd$y)
 y <- transform(filter, tsd$y)
 
-# plot
-plot_ts_pred(y=tsd$y, yadj=y)
+# Plot original vs Winsorized series
+plot_ts_pred(y = tsd$y, yadj = y)
+}
+\references{
+\itemize{
+\item J. W. Tukey (1962). The future of data analysis. Annals of Mathematical
+Statistics. (Winsorization discussed in robust summaries.)
+}
 }

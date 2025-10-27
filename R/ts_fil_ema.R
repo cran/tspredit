@@ -1,22 +1,31 @@
-#'@title Time Series Exponential Moving Average
-#'@description Used to smooth out fluctuations, while giving more weight to
-#' recent observations. Particularly useful when the data has a trend or
-#' seasonality component.
+#'@title Exponential Moving Average (EMA)
+#'@description Smooth a series by exponentially decaying weights that give more
+#' importance to recent observations.
 #'@param ema exponential moving average size
-#'@return a `ts_fil_ema` object.
+#'@return A `ts_fil_ema` object.
+#'
+#'@details EMA is related to simple exponential smoothing; it reacts faster
+#' to level changes than a simple moving average while reducing noise.
+#'
+#'@references
+#' - C. C. Holt (1957). Forecasting trends and seasonals by exponentially
+#'   weighted moving averages. O.N.R. Research Memorandum.
 #'@examples
-#'# time series with noise
-#'library(daltoolbox)
-#'data(tsd)
-#'tsd$y[9] <- 2*tsd$y[9]
+#'# Exponential moving average smoothing on a noisy series
+#' # Load package and example data
+#' library(daltoolbox)
+#' data(tsd)
 #'
-#'# filter
-#'filter <- ts_fil_ema(ema = 3)
-#'filter <- fit(filter, tsd$y)
-#'y <- transform(filter, tsd$y)
+#' # Inject an outlier to illustrate smoothing effect
+#' tsd$y[9] <- 2 * tsd$y[9]
 #'
-#'# plot
-#'plot_ts_pred(y=tsd$y, yadj=y)
+#' # Define EMA filter, fit and transform the series
+#' filter <- ts_fil_ema(ema = 3)
+#' filter <- fit(filter, tsd$y)
+#' y <- transform(filter, tsd$y)
+#'
+#' # Compare original vs smoothed series
+#' plot_ts_pred(y = tsd$y, yadj = y)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform

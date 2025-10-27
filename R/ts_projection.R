@@ -1,20 +1,26 @@
 #'@title Time Series Projection
-#'@description Separates a `ts_data` object into input and output components for time series analysis.
-#' This function is useful for preparing data for modeling, where the input and output variables are extracted from a time series dataset.
-#'@param ts matrix or data.frame containing the time series.
-#'@return returns a `ts_projection` object.
+#'@description Split a `ts_data` (sliding windows) into input features and
+#' output targets for modeling.
+#'
+#'@details For a multi-column `ts_data`, returns all but the last column as
+#' inputs and the last column as the output. For a single-row matrix, returns
+#' `ts_data`-wrapped inputs/outputs preserving names and window size.
+#'
+#'@param ts Matrix or data.frame containing a `ts_data` representation.
+#'@return A `ts_projection` object with two elements: `$input` and `$output`.
 #'@examples
-#'#setting up a ts_data
-#'data(tsd)
-#'ts <- ts_data(tsd$y, 10)
+#'# Setting up a ts_data and projecting (X, y)
+#' # Load example dataset and create windows
+#' data(tsd)
+#' ts <- ts_data(tsd$y, 10)
 #'
 #'io <- ts_projection(ts)
 #'
-#'#input data
-#'ts_head(io$input)
+#'# Input data (features)
+#' ts_head(io$input)
 #'
-#'#output data
-#'ts_head(io$output)
+#'# Output data (target)
+#' ts_head(io$output)
 #'@export
 ts_projection <- function(ts) {
   input <- ts
@@ -22,12 +28,14 @@ ts_projection <- function(ts) {
 
   if (is.matrix(ts) || is.data.frame(ts)) {
     if (nrow(ts) > 1) {
+      # Multi-row: last column is output, others are inputs
       input <- ts[,1:(ncol(ts)-1)]
       colnames(input) <- colnames(ts)[1:(ncol(ts)-1)]
       output <- ts[,ncol(ts)]
       colnames(output) <- colnames(ts)[ncol(ts)]
     }
     else {
+      # Single row: wrap each side as ts_data to preserve expected interface
       input <- ts_data(ts[,1:(ncol(ts)-1)], ncol(ts)-1)
       colnames(input) <- colnames(ts)[1:(ncol(ts)-1)]
       output <- ts_data(ts[,ncol(ts)], 1)

@@ -1,20 +1,27 @@
 #'@title Wavelet Filter
-#'@description Wavelet Filter
-#'@param filter Availables wavelet filters: haar, d4, la8, bl14, c6
-#'@return a `ts_fil_wavelet` object.
+#'@description Denoise a series using discrete wavelet transforms and selected
+#' wavelet families.
+#'@param filter Available wavelet filters: 'haar', 'd4', 'la8', 'bl14', 'c6'.
+#'@return A `ts_fil_wavelet` object.
+#'
+#'@references
+#' - S. Mallat (1989). A Theory for Multiresolution Signal Decomposition:
+#'   The Wavelet Representation. IEEE Transactions on Pattern Analysis and
+#'   Machine Intelligence.
 #'@examples
-#'# time series with noise
-#'library(daltoolbox)
-#'data(tsd)
-#'tsd$y[9] <- 2*tsd$y[9]
+#'# Denoising with discrete wavelets (optionally selecting best filter)
+#' # Load package and example data
+#' library(daltoolbox)
+#' data(tsd)
+#' tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
 #'
-#'# filter
-#'filter <- ts_fil_wavelet()
-#'filter <- fit(filter, tsd$y)
-#'y <- transform(filter, tsd$y)
+#' # Fit wavelet filter ("haar" by default; can pass a list to select best)
+#' filter <- ts_fil_wavelet()
+#' filter <- fit(filter, tsd$y)
+#' y <- transform(filter, tsd$y)
 #'
-#'# plot
-#'plot_ts_pred(y=tsd$y, yadj=y)
+#' # Compare original vs wavelet-denoised series
+#' plot_ts_pred(y = tsd$y, yadj = y)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform

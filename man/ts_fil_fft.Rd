@@ -7,22 +7,34 @@
 ts_fil_fft()
 }
 \value{
-a \code{ts_fil_fft} object.
+A \code{ts_fil_fft} object.
 }
 \description{
-FFT Filter
+Frequency-domain smoothing using the Fast Fourier Transform
+(FFT) to attenuate high-frequency components.
+}
+\details{
+The implementation estimates a cutoff based on spectral statistics
+and reconstructs the series from dominant frequencies.
 }
 \examples{
-# time series with noise
+# Frequency-domain smoothing via FFT cutoff
+# Load package and example data
 library(daltoolbox)
 data(tsd)
-tsd$y[9] <- 2*tsd$y[9]
+tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
 
-# filter
+# Fit FFT-based filter and reconstruct without high frequencies
 filter <- ts_fil_fft()
 filter <- fit(filter, tsd$y)
 y <- transform(filter, tsd$y)
 
-# plot
-plot_ts_pred(y=tsd$y, yadj=y)
+# Compare original vs frequency-smoothed series
+plot_ts_pred(y = tsd$y, yadj = y)
+}
+\references{
+\itemize{
+\item J. W. Cooley and J. W. Tukey (1965). An algorithm for the machine
+calculation of complex Fourier series. Math. Comput.
+}
 }

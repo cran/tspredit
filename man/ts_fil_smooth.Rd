@@ -7,22 +7,24 @@
 ts_fil_smooth()
 }
 \value{
-a \code{ts_fil_smooth} object.
+A \code{ts_fil_smooth} object.
 }
 \description{
-Used to remove or reduce randomness (noise).
+Remove or reduce randomness (noise) using a robust smoothing
+strategy that first mitigates outliers and then smooths residual variation.
 }
 \examples{
-# time series with noise
+# Robust smoothing with iterative outlier mitigation
+# Load package and example data
 library(daltoolbox)
 data(tsd)
-tsd$y[9] <- 2*tsd$y[9]
+tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
 
-# filter
+# Fit smoother and transform to reduce spikes/noise
 filter <- ts_fil_smooth()
 filter <- fit(filter, tsd$y)
 y <- transform(filter, tsd$y)
 
-# plot
-plot_ts_pred(y=tsd$y, yadj=y)
+# Compare original vs smoothed series
+plot_ts_pred(y = tsd$y, yadj = y)
 }

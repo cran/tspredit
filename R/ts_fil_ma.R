@@ -1,7 +1,10 @@
-#'@title Time Series Moving Average
-#'@description Used to smooth out fluctuations and reduce noise in a time series.
+#'@title Moving Average (MA)
+#'@description Smooth out fluctuations and reduce noise by averaging over a
+#' fixed-size rolling window.
 #'@param ma moving average size
-#'@return a `ts_fil_ma` object.
+#'@return A `ts_fil_ma` object.
+#'
+#'@details Larger windows produce smoother series but may lag turning points.
 #'@examples
 #'# time series with noise
 #'library(daltoolbox)
@@ -29,8 +32,10 @@ ts_fil_ma <- function(ma = 3) {
 #'@importFrom daltoolbox transform
 #'@exportS3Method transform ts_fil_ma
 transform.ts_fil_ma <- function(obj, data, ...) {
+  # Convert to windows of size `ma` then take row means
   data <- ts_data(data, obj$ma)
   ma <- apply(data, 1, mean)
+  # Left-pad NAs to match original length
   result <- c(rep(NA, obj$ma-1), ma)
   return(result)
 }
