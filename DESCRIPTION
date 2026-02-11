@@ -1,6 +1,6 @@
 Package: tspredit
 Title: Time Series Prediction with Integrated Tuning
-Version: 1.2.747
+Version: 1.2.767
 Authors@R: 
   c(    person(given = "Eduardo", family = "Ogasawara", role = c("aut", "ths", "cre"), 
                email = "eogasawara@ieee.org", comment = c(ORCID = "0000-0002-0466-0626")),
@@ -31,7 +31,7 @@ Depends: R (>= 4.1.0)
 Imports: stats, DescTools, e1071, elmNNRcpp, FNN, forecast, hht, KFAS,
         mFilter, nnet, randomForest, wavelets, dplyr, daltoolbox
 NeedsCompilation: no
-Packaged: 2025-10-26 22:57:06 UTC; gpca
+Packaged: 2026-02-11 06:45:03 UTC; gpca
 Author: Eduardo Ogasawara [aut, ths, cre] (ORCID:
     <https://orcid.org/0000-0002-0466-0626>),
   Cristiane Gea [aut],
@@ -46,4 +46,4 @@ Author: Eduardo Ogasawara [aut, ths, cre] (ORCID:
   CEFET/RJ [cph]
 Maintainer: Eduardo Ogasawara <eogasawara@ieee.org>
 Repository: CRAN
-Date/Publication: 2025-10-27 06:10:09 UTC
+Date/Publication: 2026-02-11 08:00:02 UTC
