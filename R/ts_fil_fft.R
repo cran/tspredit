@@ -4,26 +4,27 @@
 #'
 #'@return A `ts_fil_fft` object.
 #'
-#'@details The implementation estimates a cutoff based on spectral statistics
-#' and reconstructs the series from dominant frequencies.
+#'@details The implementation keeps the lowest frequencies that explain most of
+#' the spectral energy and reconstructs the series from that low-pass spectrum.
 #'
 #'@references
 #' - J. W. Cooley and J. W. Tukey (1965). An algorithm for the machine
 #'   calculation of complex Fourier series. Math. Comput.
 #'@examples
-#'# Frequency-domain smoothing via FFT cutoff
+#'# Frequency-domain smoothing via FFT low-pass reconstruction
 #' # Load package and example data
 #' library(daltoolbox)
-#' data(tsd)
-#' tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
+#' library(tspredit)
+#' x <- seq(0, 4 * pi, length.out = 128)
+#' y <- sin(x) + 0.25 * sin(12 * x)
 #'
-#' # Fit FFT-based filter and reconstruct without high frequencies
+#' # Fit FFT-based filter and reconstruct the low-frequency signal
 #' filter <- ts_fil_fft()
-#' filter <- fit(filter, tsd$y)
-#' y <- transform(filter, tsd$y)
+#' filter <- fit(filter, y)
+#' yhat <- transform(filter, y)
 #'
 #' # Compare original vs frequency-smoothed series
-#' plot_ts_pred(y = tsd$y, yadj = y)
+#' plot_ts_pred(y = y, yadj = yhat)
 #'@importFrom daltoolbox dal_transform
 #'@importFrom daltoolbox fit
 #'@importFrom daltoolbox transform
@@ -35,14 +36,20 @@ ts_fil_fft <- function() {
 }
 
 compute_cut_index <- function(freqs) {
-  # Initial cutoff at dominant frequency; adjust by threshold if spectrum varies
-  cutindex <- which.max(freqs)
-  if (min(freqs) != max(freqs)) {
-    threshold <- mean(freqs) + 2.968 * sd(freqs)
-    freqs[freqs < threshold] <- min(freqs) + max(freqs)
-    cutindex <- which.min(freqs)
+  freqs <- as.vector(freqs)
+  if (length(freqs) <= 1) {
+    return(1L)
   }
-  return(cutindex)
+
+  total_energy <- sum(freqs)
+  if (total_energy <= .Machine$double.eps) {
+    return(length(freqs))
+  }
+
+  # Keep the smallest low-frequency band that explains most spectral energy.
+  cumulative_energy <- cumsum(freqs) / total_energy
+  cutindex <- which(cumulative_energy >= 0.9)[1]
+  return(max(2L, cutindex))
 }
 
 
@@ -51,21 +58,21 @@ compute_cut_index <- function(freqs) {
 #'@importFrom stats sd
 #'@exportS3Method transform ts_fil_fft
 transform.ts_fil_fft <- function(obj, data, ...) {
-
+  data <- as.numeric(data)
   fft_signal <- stats::fft(data)
 
   spectrum <- base::Mod(fft_signal) ^ 2
-  half_spectrum <- spectrum[1:(length(obj$serie) / 2 + 1)]
+  n <- length(fft_signal)
+  half_spectrum <- spectrum[1:(floor(n / 2) + 1)]
 
   cutindex <- compute_cut_index(half_spectrum)
-  n <- length(fft_signal)
+  filtered_fft <- complex(length.out = n)
+  filtered_fft[1:cutindex] <- fft_signal[1:cutindex]
 
-  fft_signal[1:cutindex] <- 0
-  fft_signal[(n - cutindex):n] <- 0
+  mirror_start <- max(1L, n - cutindex + 2L)
+  filtered_fft[mirror_start:n] <- fft_signal[mirror_start:n]
 
-  noise <- base::Re(stats::fft(fft_signal, inverse = TRUE) / n)
-
-  result <- data - noise
+  result <- base::Re(stats::fft(filtered_fft, inverse = TRUE) / n)
 
   return(result)
 }

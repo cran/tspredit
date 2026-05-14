@@ -104,12 +104,30 @@ sMAPE.ts <- function (actual, prediction) {
 #'@param actual Numeric vector of observed values.
 #'@param prediction Numeric vector of predicted values.
 #'@return Numeric scalar with R-squared.
+#'@details R-squared is computed as `1 - SSE / SST`, where `SSE` is the sum of
+#' squared residuals and `SST` is the total sum of squares around the mean of
+#' `actual`. If `actual` is constant, the statistic is undefined and `NA_real_`
+#' is returned.
+#'
+#' Interpretation:
+#' - `R2 = 1` means perfect predictions.
+#' - `R2 = 0` means the predictor is no better than always using `mean(actual)`.
+#' - `R2 < 0` means the predictions are worse than that mean baseline.
+#'
+#' In forecasting, negative `R2` values are common when the horizon is difficult
+#' or when a recursive predictor accumulates error over several future steps.
 #'@export
 R2.ts <- function (actual, prediction) {
   if (length(actual) != length(prediction))
     stop("actual and prediction have different lengths")
-  # 1 - SSE/SST
-  res <-  1 - sum((prediction - actual)^2)/sum((mean(actual) - actual)^2)
+
+  sse <- sum((prediction - actual)^2)
+  sst <- sum((actual - mean(actual))^2)
+  if (sst == 0)
+    return(NA_real_)
+
+  # Standard coefficient of determination: 1 - SSE / SST
+  res <- 1 - sse/sst
   res
 }
 

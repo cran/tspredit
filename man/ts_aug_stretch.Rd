@@ -20,6 +20,7 @@ to produce higher-variance variants.
 # Stretch augmentation increases within-window deviations
 # Load package and example dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Convert to sliding windows and preview

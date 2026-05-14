@@ -21,6 +21,7 @@ sample.
 # Recency-aware augmentation over sliding windows
 # Load package and example dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Convert to 10-lag sliding windows and preview

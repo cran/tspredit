@@ -16,6 +16,7 @@ Identity filter that returns the original series unchanged.
 # Identity filter (returns original series)
 # Load package and example series
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier for comparison
 

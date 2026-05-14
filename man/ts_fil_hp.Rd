@@ -37,6 +37,7 @@ Use \code{preserve} in (0, 1] to convex-combine the raw series and the HP trend.
 \examples{
 # time series with noise
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 tsd$y[9] <- 2*tsd$y[9]
 

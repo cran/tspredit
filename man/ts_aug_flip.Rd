@@ -21,6 +21,7 @@ deviations, effectively generating a symmetric variant of the local pattern.
 # Flip augmentation around the window mean
 # Load package and example dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Convert to sliding windows and preview

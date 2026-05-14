@@ -22,6 +22,7 @@ extraction with a tunable roughness penalty.
 # Smoothing splines with adjustable roughness penalty
 # Load package and example data
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
 

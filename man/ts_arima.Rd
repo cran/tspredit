@@ -4,7 +4,17 @@
 \alias{ts_arima}
 \title{ARIMA}
 \usage{
-ts_arima()
+ts_arima(p = NULL, d = NULL, q = NULL)
+}
+\arguments{
+\item{p}{Optional integer autoregressive order. Leave \code{NULL} to let
+\code{auto.arima()} choose it.}
+
+\item{d}{Optional integer differencing order. Leave \code{NULL} to let
+\code{auto.arima()} choose it.}
+
+\item{q}{Optional integer moving-average order. Leave \code{NULL} to let
+\code{auto.arima()} choose it.}
 }
 \value{
 A \code{ts_arima} object (S3), which inherits from \code{ts_reg}.
@@ -14,15 +24,18 @@ Create a time series prediction object based on the
 AutoRegressive Integrated Moving Average (ARIMA) family.
 
 This constructor sets up an S3 time series regressor that leverages the
-\code{forecast} package to automatically select orders via \code{auto.arima} and
-provide one-step and multi-step forecasts.
+\code{forecast} package to either automatically select orders via
+\code{auto.arima()} or fit a user-specified \verb{(p, d, q)} structure, and provide
+one-step and multi-step forecasts.
 }
 \details{
 ARIMA models combine autoregressive (AR), differencing (I), and
 moving average (MA) components to model temporal dependence in a univariate
 time series. The \code{fit()} method uses \code{forecast::auto.arima()} to select
-orders using information criteria, and \code{predict()} supports both a single
-one-step-ahead over a horizon (rolling) and direct multi-step forecasting.
+orders using information criteria when \code{p}, \code{d}, and \code{q} are left as
+\code{NULL}; otherwise it fits the user-specified order directly.
+\code{predict()} supports both a single one-step-ahead over a horizon (rolling)
+and direct multi-step forecasting.
 
 Assumptions include (after differencing) approximate stationarity and
 homoskedastic residuals. Always inspect residual diagnostics for adequacy.
@@ -31,6 +44,7 @@ homoskedastic residuals. Always inspect residual diagnostics for adequacy.
 # Example: rolling-origin evaluation with multi-step prediction
 # Load package and dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # 1) Wrap the raw vector as `ts_data` without sliding windows
@@ -39,17 +53,15 @@ ts_head(ts, 3)
 
 # 2) Split into train/test using the last 5 observations as test
 samp <- ts_sample(ts, test_size = 5)
-io_train <- ts_projection(samp$train)
-io_test <- ts_projection(samp$test)
 
-# 3) Fit ARIMA via auto.arima
-model <- ts_arima()
-model <- fit(model, x = io_train$input, y = io_train$output)
+# 3) Fit a user-specified ARIMA(5,0,0)
+model <- ts_arima(p = 5, d = 0, q = 0)
+model <- fit(model, x = samp$train)
 
 # 4) Predict 5 steps ahead from the most recent observed point
-prediction <- predict(model, x = io_test$input[1,], steps_ahead = 5)
+prediction <- predict(model, x = samp$test[1,], steps_ahead = 5)
 prediction <- as.vector(prediction)
-output <- as.vector(io_test$output)
+output <- as.vector(samp$test)
 
 # 5) Evaluate forecast accuracy
 ev_test <- evaluate(model, output, prediction)

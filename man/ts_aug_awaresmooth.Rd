@@ -20,6 +20,7 @@ before applying the weighting, producing cleaner augmented samples.
 # Recency-aware augmentation with progressive smoothing
 # Load package and example dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Convert to 10-lag sliding windows and preview

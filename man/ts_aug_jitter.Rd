@@ -20,6 +20,7 @@ Noise scale is estimated from within-window deviations.
 # Jitter augmentation with noise estimated from windows
 # Load package and example dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Convert to sliding windows and preview

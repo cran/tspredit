@@ -15,26 +15,28 @@ A \code{ts_fil_seas_adj} object.
 }
 \description{
 Remove the seasonal component from a time series while preserving
-level and trend, using a state-space/BATS approach.
+level and trend, using STL decomposition.
 }
 \examples{
-# Seasonal adjustment using BATS at known frequency
-# Load package and example data
+# Seasonal adjustment using STL at known frequency
+# Load package and build a seasonal signal
 library(daltoolbox)
-data(tsd)
-tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier (illustrative)
+library(tspredit)
+x <- seq_len(120)
+y <- x / 100 + sin(2 * pi * x / 12) + rnorm(120, sd = 0.05)
 
 # Fit seasonal adjustment (set frequency if known) and transform
-filter <- ts_fil_seas_adj(frequency = 26)
-filter <- fit(filter, tsd$y)
-y <- transform(filter, tsd$y)
+filter <- ts_fil_seas_adj(frequency = 12)
+filter <- fit(filter, y)
+yhat <- transform(filter, y)
 
 # Plot original vs seasonally adjusted series
-plot_ts_pred(y = tsd$y, yadj = y)
+plot_ts_pred(y = y, yadj = yhat)
 }
 \references{
 \itemize{
-\item R. J. Hyndman and G. Athanasopoulos (2021). Forecasting: Principles and
-Practice (3rd ed). OTexts. (BATS/seasonal adjustment)
+\item R. B. Cleveland, W. S. Cleveland, J. E. McRae, and I. Terpenning (1990).
+STL: A seasonal-trend decomposition procedure based on loess.
+Journal of Official Statistics, 6(1), 3–73.
 }
 }

@@ -11,6 +11,8 @@ ts_fil_ses(gamma = FALSE)
 }
 \value{
 A \code{ts_fil_ses} object.
+The transformed series is aligned to the input length and may contain a
+leading \code{NA} while the Holt-Winters state is being initialized.
 }
 \description{
 Exponential smoothing focused on the level component, with
@@ -19,6 +21,7 @@ optional extensions to trend/seasonality via Holt–Winters variants.
 \examples{
 # time series with noise
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 tsd$y[9] <- 2*tsd$y[9]
 

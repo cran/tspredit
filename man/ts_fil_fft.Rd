@@ -14,23 +14,24 @@ Frequency-domain smoothing using the Fast Fourier Transform
 (FFT) to attenuate high-frequency components.
 }
 \details{
-The implementation estimates a cutoff based on spectral statistics
-and reconstructs the series from dominant frequencies.
+The implementation keeps the lowest frequencies that explain most of
+the spectral energy and reconstructs the series from that low-pass spectrum.
 }
 \examples{
-# Frequency-domain smoothing via FFT cutoff
+# Frequency-domain smoothing via FFT low-pass reconstruction
 # Load package and example data
 library(daltoolbox)
-data(tsd)
-tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
+library(tspredit)
+x <- seq(0, 4 * pi, length.out = 128)
+y <- sin(x) + 0.25 * sin(12 * x)
 
-# Fit FFT-based filter and reconstruct without high frequencies
+# Fit FFT-based filter and reconstruct the low-frequency signal
 filter <- ts_fil_fft()
-filter <- fit(filter, tsd$y)
-y <- transform(filter, tsd$y)
+filter <- fit(filter, y)
+yhat <- transform(filter, y)
 
 # Compare original vs frequency-smoothed series
-plot_ts_pred(y = tsd$y, yadj = y)
+plot_ts_pred(y = y, yadj = yhat)
 }
 \references{
 \itemize{

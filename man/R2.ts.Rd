@@ -17,3 +17,19 @@ Numeric scalar with R-squared.
 \description{
 Compute coefficient of determination (R-squared).
 }
+\details{
+R-squared is computed as \code{1 - SSE / SST}, where \code{SSE} is the sum of
+squared residuals and \code{SST} is the total sum of squares around the mean of
+\code{actual}. If \code{actual} is constant, the statistic is undefined and \code{NA_real_}
+is returned.
+
+Interpretation:
+\itemize{
+\item \code{R2 = 1} means perfect predictions.
+\item \code{R2 = 0} means the predictor is no better than always using \code{mean(actual)}.
+\item \code{R2 < 0} means the predictions are worse than that mean baseline.
+}
+
+In forecasting, negative \code{R2} values are common when the horizon is difficult
+or when a recursive predictor accumulates error over several future steps.
+}

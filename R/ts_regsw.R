@@ -8,20 +8,26 @@
 #'
 #'@param preprocess Normalization preprocessor (e.g., `ts_norm_gminmax()`).
 #'@param input_size Integer. Number of lagged inputs per example.
+#'@param input_map Lag-selection strategy object created by `ts_lagmap()`.
 #'@return A `ts_regsw` object (S3) to be extended by concrete models.
 #'@examples
 #'# Abstract base class for sliding-window regressors
 #' # Use concrete subclasses such as ts_mlp(), ts_rf(), ts_svm(), ts_elm()
 #'@export
-ts_regsw <- function(preprocess=NA, input_size=NA) {
+ts_regsw <- function(preprocess = NA, input_size = NA, input_map = ts_lagmap()) {
   obj <- ts_reg()
-  obj$ts_as_matrix <- function(data, input_size) {
-    # Keep only the last `input_size` lag columns as ML features
-    result <- data[,(ncol(data)-input_size+1):ncol(data)]
-    return(result)
+  obj$ts_as_matrix <- function(data, input_map, input_size) {
+    if (length(input_map$positions) == 0) {
+      input_map <- fit(input_map, data, input_size = input_size)
+    }
+
+    # Apply the learned lag mapping so every backend receives the same
+    # selected attributes during fit and predict.
+    data[, input_map$positions, drop = FALSE]
   }
   obj$preprocess <- preprocess
   obj$input_size <- input_size
+  obj$input_map <- input_map
 
   class(obj) <- append("ts_regsw", class(obj))
   return(obj)
@@ -32,6 +38,8 @@ ts_regsw <- function(preprocess=NA, input_size=NA) {
 #'@return A fitted object with learned backend model and fitted preprocessor.
 #'@noRd
 fit.ts_regsw <- function(obj, x, y, ...) {
+  obj$input_map <- fit(obj$input_map, x, y, input_size = obj$input_size)
+
   # Fit preprocessor on input windows
   obj$preprocess <- fit(obj$preprocess, x)
 
@@ -42,7 +50,7 @@ fit.ts_regsw <- function(obj, x, y, ...) {
   y <- transform(obj$preprocess, x, y)
 
   # Train the backend model using only the feature columns
-  obj <- do_fit(obj, obj$ts_as_matrix(x, obj$input_size), y)
+  obj <- do_fit(obj, obj$ts_as_matrix(x, obj$input_map, obj$input_size), y)
 
   return(obj)
 }
@@ -57,7 +65,7 @@ predict.ts_regsw <- function(object, x, steps_ahead=1, ...) {
   if (steps_ahead == 1) {
     # One-step ahead per row
     x <- transform(object$preprocess, x)
-    data <- object$ts_as_matrix(x, object$input_size)
+    data <- object$ts_as_matrix(x, object$input_map, object$input_size)
     y <- do_predict(object, data)
     # Map predictions back to original scale if needed
     y <- inverse_transform(object$preprocess, x, y)
@@ -73,7 +81,7 @@ predict.ts_regsw <- function(object, x, steps_ahead=1, ...) {
       # Iteratively predict one step and roll the window forward
       colnames(x) <- cnames
       x <- transform(object$preprocess, x)
-      y <- do_predict(object, object$ts_as_matrix(x, object$input_size))
+      y <- do_predict(object, object$ts_as_matrix(x, object$input_map, object$input_size))
       # Rebuild ts_data in original scale to manage the rolling window
       x <- adjust_ts_data(inverse_transform(object$preprocess, x))
       y <- inverse_transform(object$preprocess, x, y)

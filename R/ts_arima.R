@@ -3,17 +3,26 @@
 #' AutoRegressive Integrated Moving Average (ARIMA) family.
 #'
 #' This constructor sets up an S3 time series regressor that leverages the
-#' `forecast` package to automatically select orders via `auto.arima` and
-#' provide one-step and multi-step forecasts.
+#' `forecast` package to either automatically select orders via
+#' `auto.arima()` or fit a user-specified `(p, d, q)` structure, and provide
+#' one-step and multi-step forecasts.
 #'
 #'@details ARIMA models combine autoregressive (AR), differencing (I), and
 #' moving average (MA) components to model temporal dependence in a univariate
 #' time series. The `fit()` method uses `forecast::auto.arima()` to select
-#' orders using information criteria, and `predict()` supports both a single
-#' one-step-ahead over a horizon (rolling) and direct multi-step forecasting.
+#' orders using information criteria when `p`, `d`, and `q` are left as
+#' `NULL`; otherwise it fits the user-specified order directly.
+#' `predict()` supports both a single one-step-ahead over a horizon (rolling)
+#' and direct multi-step forecasting.
 #'
 #' Assumptions include (after differencing) approximate stationarity and
 #' homoskedastic residuals. Always inspect residual diagnostics for adequacy.
+#'@param p Optional integer autoregressive order. Leave `NULL` to let
+#' `auto.arima()` choose it.
+#'@param d Optional integer differencing order. Leave `NULL` to let
+#' `auto.arima()` choose it.
+#'@param q Optional integer moving-average order. Leave `NULL` to let
+#' `auto.arima()` choose it.
 #'
 #'@return A `ts_arima` object (S3), which inherits from `ts_reg`.
 #'
@@ -27,6 +36,7 @@
 #'# Example: rolling-origin evaluation with multi-step prediction
 #' # Load package and dataset
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'
 #'# 1) Wrap the raw vector as `ts_data` without sliding windows
@@ -35,24 +45,28 @@
 #'
 #'# 2) Split into train/test using the last 5 observations as test
 #'samp <- ts_sample(ts, test_size = 5)
-#'io_train <- ts_projection(samp$train)
-#'io_test <- ts_projection(samp$test)
 #'
-#'# 3) Fit ARIMA via auto.arima
-#'model <- ts_arima()
-#'model <- fit(model, x = io_train$input, y = io_train$output)
+#'# 3) Fit a user-specified ARIMA(5,0,0)
+#'model <- ts_arima(p = 5, d = 0, q = 0)
+#'model <- fit(model, x = samp$train)
 #'
 #'# 4) Predict 5 steps ahead from the most recent observed point
-#'prediction <- predict(model, x = io_test$input[1,], steps_ahead = 5)
+#'prediction <- predict(model, x = samp$test[1,], steps_ahead = 5)
 #'prediction <- as.vector(prediction)
-#'output <- as.vector(io_test$output)
+#'output <- as.vector(samp$test)
 #'
 #'# 5) Evaluate forecast accuracy
 #'ev_test <- evaluate(model, output, prediction)
 #'ev_test
 #'@export
-ts_arima <- function() {
+ts_arima <- function(p = NULL, d = NULL, q = NULL) {
   obj <- ts_reg()
+  obj$p <- p
+  obj$d <- d
+  obj$q <- q
+  obj$manual_order <- !is.null(p) && !is.null(d) && !is.null(q)
+  obj$include_mean <- isTRUE(obj$manual_order && d == 0)
+  obj$include_drift <- isTRUE(obj$manual_order && d == 1)
 
   class(obj) <- append("ts_arima", class(obj))
   return(obj)
@@ -63,16 +77,28 @@ ts_arima <- function() {
 #'@exportS3Method fit ts_arima
 #'@inheritParams do_fit
 #'@return A fitted `ts_arima` object with selected orders and parameters.
-#'@details Uses `forecast::auto.arima()` with drift/mean allowed to determine
-#' model orders and whether a drift term should be included.
+#'@details Uses `forecast::auto.arima()` with drift/mean allowed when no manual
+#' order is supplied; otherwise fits the exact `(p, d, q)` specified in
+#' `ts_arima()`.
 #'@noRd
 fit.ts_arima <- function(obj, x, y = NULL, ...) {
-  obj$model <- forecast::auto.arima(x, allowdrift = TRUE, allowmean = TRUE)
-  order <- obj$model$arma[c(1, 6, 2, 3, 7, 4, 5)]
-  obj$p <- order[1]
-  obj$d <- order[2]
-  obj$q <- order[3]
-  obj$drift <- (NCOL(obj$model$xreg) == 1) && is.element("drift", names(obj$model$coef))
+  if (isTRUE(obj$manual_order)) {
+    obj$model <- forecast::Arima(
+      x,
+      order = c(obj$p, obj$d, obj$q),
+      include.mean = obj$include_mean,
+      include.drift = obj$include_drift
+    )
+  } else {
+    obj$model <- forecast::auto.arima(x, allowdrift = TRUE, allowmean = TRUE)
+    order <- obj$model$arma[c(1, 6, 2, 3, 7, 4, 5)]
+    obj$p <- order[1]
+    obj$d <- order[2]
+    obj$q <- order[3]
+    obj$include_mean <- isTRUE(obj$d == 0 && !is.element("intercept", names(obj$model$coef)))
+    obj$include_drift <- (NCOL(obj$model$xreg) == 1) && is.element("drift", names(obj$model$coef))
+  }
+  obj$drift <- isTRUE(obj$include_drift)
   params <- list(p = obj$p, d = obj$d, q = obj$q, drift = obj$drift)
   attr(obj, "params") <- params
 
@@ -111,7 +137,12 @@ predict.ts_arima <- function(object, x, y = NULL, steps_ahead=NULL, ...) {
         # Refit quickly using known orders; if that fails, fall back to auto.arima
         model <- tryCatch(
           {
-            forecast::Arima(y, order=c(object$p, object$d, object$q), include.drift = object$drift)
+            forecast::Arima(
+              y,
+              order = c(object$p, object$d, object$q),
+              include.mean = isTRUE(object$include_mean),
+              include.drift = isTRUE(object$include_drift)
+            )
           },
           error = function(cond) {
             forecast::auto.arima(y, allowdrift = TRUE, allowmean = TRUE)

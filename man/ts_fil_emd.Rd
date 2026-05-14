@@ -23,6 +23,7 @@ component.
 # EMD-based smoothing: remove first IMF as noise
 # Load package and example data
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
 

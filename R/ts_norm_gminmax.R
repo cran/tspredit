@@ -14,6 +14,7 @@
 #'# Global min–max normalization across the full training set
 #' # Load package and example data
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'
 #' # Build 10-lag windows and preview raw scale

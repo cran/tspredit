@@ -12,6 +12,7 @@
 #'# Per-window min–max normalization for sliding windows
 #' # Load package and example data
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'
 #' # Build 10-lag windows and preview raw scale

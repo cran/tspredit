@@ -30,6 +30,7 @@ selected best configuration.
 # Example: grid search over input_size and ELM hyperparameters
 # Load library and example data
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Prepare 10-lag windows and split into train/test

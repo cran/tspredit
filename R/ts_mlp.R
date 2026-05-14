@@ -12,6 +12,7 @@
 #'
 #'@param preprocess Normalization preprocessor (e.g., `ts_norm_gminmax()`).
 #'@param input_size Integer. Number of lagged inputs used by the model.
+#'@param input_map Lag-selection strategy object created by `ts_lagmap()`.
 #'@param size Integer. Number of hidden neurons.
 #'@param decay Numeric. L2 weight decay (regularization) parameter.
 #'@param maxit Integer. Maximum number of training iterations.
@@ -26,6 +27,7 @@
 #'# Example: MLP on sliding windows with min–max normalization
 #' # Load package and dataset
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'ts <- ts_data(tsd$y, 10)
 #'ts_head(ts, 3)
@@ -40,7 +42,9 @@
 #'io_test <- ts_projection(samp$test)
 #'
 #'# Define and fit the MLP
-#'model <- ts_mlp(ts_norm_gminmax(), input_size = 4, size = 4, decay = 0)
+#'imap <- ts_lagmap("even")
+#'model <- ts_mlp(ts_norm_gminmax(), input_size = 4, input_map = imap,
+#'  size = 4, decay = 0)
 #'model <- fit(model, x=io_train$input, y=io_train$output)
 #'
 #'# Predict 5 steps ahead
@@ -52,8 +56,8 @@
 #'ev_test <- evaluate(model, output, prediction)
 #'ev_test
 #'@export
-ts_mlp <- function(preprocess=NA, input_size=NA, size=NA, decay=0.01, maxit=1000) {
-  obj <- ts_regsw(preprocess, input_size)
+ts_mlp <- function(preprocess = NA, input_size = NA, input_map = ts_lagmap(), size = NA, decay = 0.01, maxit = 1000) {
+  obj <- ts_regsw(preprocess, input_size, input_map)
   if (is.na(size))
     size <- ceiling(input_size/3)  # heuristic hidden size
 

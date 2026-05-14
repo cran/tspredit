@@ -4,12 +4,21 @@
 \alias{ts_mlp}
 \title{MLP}
 \usage{
-ts_mlp(preprocess = NA, input_size = NA, size = NA, decay = 0.01, maxit = 1000)
+ts_mlp(
+  preprocess = NA,
+  input_size = NA,
+  input_map = ts_lagmap(),
+  size = NA,
+  decay = 0.01,
+  maxit = 1000
+)
 }
 \arguments{
 \item{preprocess}{Normalization preprocessor (e.g., \code{ts_norm_gminmax()}).}
 
 \item{input_size}{Integer. Number of lagged inputs used by the model.}
+
+\item{input_map}{Lag-selection strategy object created by \code{ts_lagmap()}.}
 
 \item{size}{Integer. Number of hidden neurons.}
 
@@ -37,6 +46,7 @@ weight decay control capacity and regularization respectively.
 # Example: MLP on sliding windows with min–max normalization
 # Load package and dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 ts <- ts_data(tsd$y, 10)
 ts_head(ts, 3)
@@ -51,7 +61,9 @@ io_train <- ts_projection(samp$train)
 io_test <- ts_projection(samp$test)
 
 # Define and fit the MLP
-model <- ts_mlp(ts_norm_gminmax(), input_size = 4, size = 4, decay = 0)
+imap <- ts_lagmap("even")
+model <- ts_mlp(ts_norm_gminmax(), input_size = 4, input_map = imap,
+ size = 4, decay = 0)
 model <- fit(model, x=io_train$input, y=io_train$output)
 
 # Predict 5 steps ahead

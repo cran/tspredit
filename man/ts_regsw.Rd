@@ -4,12 +4,14 @@
 \alias{ts_regsw}
 \title{TSRegSW}
 \usage{
-ts_regsw(preprocess = NA, input_size = NA)
+ts_regsw(preprocess = NA, input_size = NA, input_map = ts_lagmap())
 }
 \arguments{
 \item{preprocess}{Normalization preprocessor (e.g., \code{ts_norm_gminmax()}).}
 
 \item{input_size}{Integer. Number of lagged inputs per example.}
+
+\item{input_map}{Lag-selection strategy object created by \code{ts_lagmap()}.}
 }
 \value{
 A \code{ts_regsw} object (S3) to be extended by concrete models.

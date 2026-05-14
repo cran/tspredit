@@ -20,6 +20,7 @@ to generate lower-variance variants while preserving the mean.
 # Shrink augmentation reduces within-window deviations
 # Load package and example dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Convert to sliding windows and preview

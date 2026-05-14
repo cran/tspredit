@@ -8,9 +8,12 @@
 #' For tabular sliding-window features, they can capture nonlinearities and
 #' interactions without heavy feature engineering. Consider normalizing inputs
 #' for comparability across windows and tuning `mtry`, `ntree`, and `nodesize`.
+#' In recursive multi-step forecasting, very small forests can be unstable, so
+#' the default uses a moderately larger ensemble.
 #'
 #'@param preprocess Normalization preprocessor (e.g., `ts_norm_gminmax()`).
 #'@param input_size Integer. Number of lagged inputs used by the model.
+#'@param input_map Lag-selection strategy object created by `ts_lagmap()`.
 #'@param nodesize Integer. Minimum terminal node size.
 #'@param ntree Integer. Number of trees in the forest.
 #'@param mtry Integer. Number of variables randomly sampled at each split.
@@ -22,6 +25,7 @@
 #'# Example: sliding-window Random Forest
 #' # Load tools and data
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'
 #' # Turn series into 10-lag windows and preview
@@ -33,8 +37,9 @@
 #' io_train <- ts_projection(samp$train)
 #' io_test <- ts_projection(samp$test)
 #'
-#' # Define Random Forest and fit (tune ntree/mtry/nodesize as needed)
-#' model <- ts_rf(ts_norm_gminmax(), input_size = 4, nodesize = 3, ntree = 50)
+#' # Define Random Forest and fit
+#' model <- ts_rf(ts_norm_gminmax(), input_size = 9,
+#'   nodesize = 1, ntree = 100)
 #' model <- fit(model, x = io_train$input, y = io_train$output)
 #'
 #' # Forecast multiple steps and assess error
@@ -45,8 +50,8 @@
 #' ev_test <- evaluate(model, output, prediction)
 #' ev_test
 #'@export
-ts_rf <- function(preprocess=NA, input_size=NA, nodesize = 1, ntree = 10, mtry = NULL) {
-  obj <- ts_regsw(preprocess, input_size)
+ts_rf <- function(preprocess = NA, input_size = NA, input_map = ts_lagmap(), nodesize = 1, ntree = 100, mtry = NULL) {
+  obj <- ts_regsw(preprocess, input_size, input_map)
 
   obj$nodesize <- nodesize
   obj$ntree <- ntree
@@ -64,7 +69,7 @@ ts_rf <- function(preprocess=NA, input_size=NA, nodesize = 1, ntree = 10, mtry =
 #'@noRd
 do_fit.ts_rf <- function(obj, x, y) {
   if (is.null(obj$mtry))
-    obj$mtry <- ceiling(obj$input_size/3)  # default to ~1/3 of features
+    obj$mtry <- ceiling(ncol(x)/3)  # default to ~1/3 of selected features
   # Cast to data.frame for randomForest API and fit ensemble
   obj$model <- randomForest::randomForest(x = as.data.frame(x), y = as.vector(y), mtry=obj$mtry, nodesize = obj$nodesize, ntree=obj$ntree)
   return(obj)

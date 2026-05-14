@@ -4,12 +4,21 @@
 \alias{ts_rf}
 \title{Random Forest}
 \usage{
-ts_rf(preprocess = NA, input_size = NA, nodesize = 1, ntree = 10, mtry = NULL)
+ts_rf(
+  preprocess = NA,
+  input_size = NA,
+  input_map = ts_lagmap(),
+  nodesize = 1,
+  ntree = 100,
+  mtry = NULL
+)
 }
 \arguments{
 \item{preprocess}{Normalization preprocessor (e.g., \code{ts_norm_gminmax()}).}
 
 \item{input_size}{Integer. Number of lagged inputs used by the model.}
+
+\item{input_map}{Lag-selection strategy object created by \code{ts_lagmap()}.}
 
 \item{nodesize}{Integer. Minimum terminal node size.}
 
@@ -31,11 +40,14 @@ Random Forests reduce variance by averaging many decorrelated trees.
 For tabular sliding-window features, they can capture nonlinearities and
 interactions without heavy feature engineering. Consider normalizing inputs
 for comparability across windows and tuning \code{mtry}, \code{ntree}, and \code{nodesize}.
+In recursive multi-step forecasting, very small forests can be unstable, so
+the default uses a moderately larger ensemble.
 }
 \examples{
 # Example: sliding-window Random Forest
 # Load tools and data
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Turn series into 10-lag windows and preview
@@ -47,8 +59,9 @@ samp <- ts_sample(ts, test_size = 5)
 io_train <- ts_projection(samp$train)
 io_test <- ts_projection(samp$test)
 
-# Define Random Forest and fit (tune ntree/mtry/nodesize as needed)
-model <- ts_rf(ts_norm_gminmax(), input_size = 4, nodesize = 3, ntree = 50)
+# Define Random Forest and fit
+model <- ts_rf(ts_norm_gminmax(), input_size = 9,
+  nodesize = 1, ntree = 100)
 model <- fit(model, x = io_train$input, y = io_train$output)
 
 # Forecast multiple steps and assess error

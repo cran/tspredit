@@ -6,6 +6,7 @@
 #'# Identity augmentation (no changes to windows)
 #' # Load package and example dataset
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'
 #' # Convert to sliding windows and preview

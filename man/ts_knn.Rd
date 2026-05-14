@@ -4,12 +4,14 @@
 \alias{ts_knn}
 \title{KNN Time Series Prediction}
 \usage{
-ts_knn(preprocess = NA, input_size = NA, k = NA)
+ts_knn(preprocess = NA, input_size = NA, input_map = ts_lagmap(), k = NA)
 }
 \arguments{
 \item{preprocess}{Normalization preprocessor (e.g., \code{ts_norm_gminmax()}).}
 
 \item{input_size}{Integer. Number of lagged inputs.}
+
+\item{input_map}{Lag-selection strategy object created by \code{ts_lagmap()}.}
 
 \item{k}{Integer. Number of neighbors.}
 }
@@ -30,6 +32,7 @@ normalization for distance-based methods.
 # Example: distance-based regression on sliding windows
 # Load tools and example series
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Build 10-lag windows and preview a few rows
@@ -42,7 +45,7 @@ io_train <- ts_projection(samp$train)
 io_test <- ts_projection(samp$test)
 
 # Define KNN regressor and fit (distance-based; normalization recommended)
-model <- ts_knn(ts_norm_gminmax(), input_size = 4, k = 3)
+model <- ts_knn(ts_norm_gminmax(), input_size = 4, input_map = ts_lagmap("pacf"), k = 3)
 model <- fit(model, x = io_train$input, y = io_train$output)
 
 # Predict multiple steps ahead and evaluate

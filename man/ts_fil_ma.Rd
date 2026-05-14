@@ -22,6 +22,7 @@ Larger windows produce smoother series but may lag turning points.
 \examples{
 # time series with noise
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 tsd$y[9] <- 2*tsd$y[9]
 

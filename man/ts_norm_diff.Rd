@@ -20,6 +20,7 @@ highlight changes; normalization is then applied to the differenced series.
 # Differencing + global min–max normalization
 # Load package and example data
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Convert to sliding windows and preview raw last column

@@ -7,7 +7,8 @@
 ts_svm(
   preprocess = NA,
   input_size = NA,
-  kernel = "radial",
+  input_map = ts_lagmap(),
+  kernel = c("radial", "linear", "polynomial", "sigmoid"),
   epsilon = 0,
   cost = 10
 )
@@ -16,6 +17,8 @@ ts_svm(
 \item{preprocess}{Normalization preprocessor (e.g., \code{ts_norm_gminmax()}).}
 
 \item{input_size}{Integer. Number of lagged inputs used by the model.}
+
+\item{input_map}{Lag-selection strategy object created by \code{ts_lagmap()}.}
 
 \item{kernel}{Character. One of 'linear', 'radial', 'polynomial', 'sigmoid'.}
 
@@ -44,6 +47,7 @@ nonlinear series; tune \code{cost}, \code{epsilon}, and kernel hyperparameters.
 # Example: SVR with min–max normalization
 # Load package and dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Create sliding windows and preview
@@ -56,7 +60,11 @@ io_train <- ts_projection(samp$train)
 io_test <- ts_projection(samp$test)
 
 # Define SVM regressor and fit to training data
-model <- ts_svm(ts_norm_gminmax(), input_size = 4)
+model <- ts_svm(
+  ts_norm_gminmax(),
+  input_size = 4,
+  input_map = ts_lagmap("seasonal", seasonality = 4)
+)
 model <- fit(model, x = io_train$input, y = io_train$output)
 
 # Multi-step forecast and evaluation

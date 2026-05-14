@@ -6,6 +6,7 @@
 #'# Identity normalization (no scaling applied)
 #' # Load package and example data
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'
 #'# Convert to sliding windows

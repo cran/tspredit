@@ -64,9 +64,9 @@ ts_data <- function(y, sw=1) {
 #'@description Extracts a subset of a time series object based on specified rows and columns.
 #'The function allows for flexible indexing and subsetting of time series data.
 #'@param x `ts_data` object
-#'@param i row i
+#'@param i row i or linear index when a single subscript is supplied
 #'@param j column j
-#'@param ... optional arguments
+#'@param drop Ignored. `ts_data` always preserves matrix structure.
 #'@return A new `ts_data` object with preserved metadata and column names.
 #'@examples
 #'data(tsd)
@@ -96,9 +96,27 @@ ts_data <- function(y, sw=1) {
 #'#single observation
 #'data10[12,1]
 #'@export
-`[.ts_data` <- function(x, i, j, ...) {
-  # Subset while preserving class and sliding-window metadata
-  y <- unclass(x)[i, j, drop = FALSE, ...]
+`[.ts_data` <- function(x, i, j, drop = FALSE) {
+  data <- unclass(x)
+
+  # Preserve matrix semantics for both linear indexing (`x[i]`) and
+  # row/column indexing (`x[i, j]`), while never dropping dimensions.
+  if (nargs() == 2) {
+    if (missing(i)) {
+      y <- data[, , drop = FALSE]
+    } else {
+      y <- matrix(data[i], ncol = 1)
+      idx <- arrayInd(i[1], .dim = dim(data))
+      colnames(y) <- colnames(data)[idx[2]]
+    }
+  } else if (missing(i)) {
+    y <- data[, j, drop = FALSE]
+  } else if (missing(j)) {
+    y <- data[i, , drop = FALSE]
+  } else {
+    y <- data[i, j, drop = FALSE]
+  }
+
   class(y) <- append("ts_data", class(y))
   attr(y, "sw") <- ncol(y)
   return(y)

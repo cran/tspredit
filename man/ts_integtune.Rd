@@ -36,6 +36,7 @@ and model hyperparameters for time series.
 \examples{
 # Integrated search over input size, preprocessing and model hyperparameters
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Build windows and split into train/test, then project to (X, y)

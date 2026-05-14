@@ -4,12 +4,20 @@
 \alias{ts_elm}
 \title{ELM}
 \usage{
-ts_elm(preprocess = NA, input_size = NA, nhid = NA, actfun = "purelin")
+ts_elm(
+  preprocess = NA,
+  input_size = NA,
+  input_map = ts_lagmap(),
+  nhid = NA,
+  actfun = "purelin"
+)
 }
 \arguments{
 \item{preprocess}{Normalization preprocessor (e.g., \code{ts_norm_gminmax()}).}
 
 \item{input_size}{Integer. Number of lagged inputs used by the model.}
+
+\item{input_map}{Lag-selection strategy object created by \code{ts_lagmap()}.}
 
 \item{nhid}{Integer. Hidden layer size.}
 
@@ -34,6 +42,7 @@ hidden size and activation choice. Consider normalizing inputs and tuning
 # Example: ELM with sliding-window inputs
 # Load package and toy dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Create sliding windows of length 10 (t9 ... t0)
@@ -47,7 +56,9 @@ io_train <- ts_projection(samp$train)
 io_test <- ts_projection(samp$test)
 
 # Define ELM with global min-max normalization and fit
-model <- ts_elm(ts_norm_gminmax(), input_size = 4, nhid = 3, actfun = "purelin")
+imap <- ts_lagmap("acf")
+model <- ts_elm(ts_norm_gminmax(), input_size = 4, input_map = imap,
+  nhid = 3, actfun = "purelin")
 model <- fit(model, x = io_train$input, y = io_train$output)
 
 # Forecast 5 steps ahead starting from the last known window

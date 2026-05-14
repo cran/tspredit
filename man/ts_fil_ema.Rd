@@ -24,6 +24,7 @@ to level changes than a simple moving average while reducing noise.
 # Exponential moving average smoothing on a noisy series
 # Load package and example data
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Inject an outlier to illustrate smoothing effect

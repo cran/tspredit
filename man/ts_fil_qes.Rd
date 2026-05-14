@@ -11,6 +11,8 @@ ts_fil_qes(gamma = FALSE)
 }
 \value{
 A \code{ts_fil_qes} object.
+The transformed series is aligned to the input length and may contain leading
+\code{NA} values while the Holt-Winters state is being initialized.
 }
 \description{
 Double/triple exponential smoothing capturing level, trend,
@@ -19,6 +21,7 @@ and optionally seasonality components.
 \examples{
 # time series with noise
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 tsd$y[9] <- 2*tsd$y[9]
 

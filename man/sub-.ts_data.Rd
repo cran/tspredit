@@ -4,16 +4,16 @@
 \alias{[.ts_data}
 \title{Subset Extraction for Time Series Data}
 \usage{
-\method{[}{ts_data}(x, i, j, ...)
+\method{[}{ts_data}(x, i, j, drop = FALSE)
 }
 \arguments{
 \item{x}{\code{ts_data} object}
 
-\item{i}{row i}
+\item{i}{row i or linear index when a single subscript is supplied}
 
 \item{j}{column j}
 
-\item{...}{optional arguments}
+\item{drop}{Ignored. \code{ts_data} always preserves matrix structure.}
 }
 \value{
 A new \code{ts_data} object with preserved metadata and column names.

@@ -13,6 +13,7 @@
 #'
 #'@param preprocess Normalization preprocessor (e.g., `ts_norm_gminmax()`).
 #'@param input_size Integer. Number of lagged inputs used by the model.
+#'@param input_map Lag-selection strategy object created by `ts_lagmap()`.
 #'@param kernel Character. One of 'linear', 'radial', 'polynomial', 'sigmoid'.
 #'@param epsilon Numeric. Epsilon-insensitive loss width.
 #'@param cost Numeric. Regularization parameter controlling margin violations.
@@ -25,6 +26,7 @@
 #'# Example: SVR with min–max normalization
 #' # Load package and dataset
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'
 #' # Create sliding windows and preview
@@ -37,7 +39,11 @@
 #' io_test <- ts_projection(samp$test)
 #'
 #' # Define SVM regressor and fit to training data
-#' model <- ts_svm(ts_norm_gminmax(), input_size = 4)
+#' model <- ts_svm(
+#'   ts_norm_gminmax(),
+#'   input_size = 4,
+#'   input_map = ts_lagmap("seasonal", seasonality = 4)
+#' )
 #' model <- fit(model, x = io_train$input, y = io_train$output)
 #'
 #' # Multi-step forecast and evaluation
@@ -48,8 +54,9 @@
 #' ev_test <- evaluate(model, output, prediction)
 #' ev_test
 #'@export
-ts_svm <- function(preprocess=NA, input_size=NA, kernel="radial", epsilon=0, cost=10) {
-  obj <- ts_regsw(preprocess, input_size)
+ts_svm <- function(preprocess = NA, input_size = NA, input_map = ts_lagmap(), kernel = c("radial", "linear", "polynomial", "sigmoid"), epsilon = 0, cost = 10) {
+  kernel <- match.arg(kernel)
+  obj <- ts_regsw(preprocess, input_size, input_map)
 
   # Kernel and hyperparameters for epsilon-SVR
   obj$kernel <- kernel # c("radial", "poly", "linear", "sigmoid")

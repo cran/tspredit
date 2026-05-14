@@ -9,6 +9,7 @@
 #'
 #'@param preprocess Normalization preprocessor (e.g., `ts_norm_gminmax()`).
 #'@param input_size Integer. Number of lagged inputs.
+#'@param input_map Lag-selection strategy object created by `ts_lagmap()`.
 #'@param k Integer. Number of neighbors.
 #'@return A `ts_knn` object (S3) inheriting from `ts_regsw`.
 #'
@@ -19,6 +20,7 @@
 #'# Example: distance-based regression on sliding windows
 #' # Load tools and example series
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'
 #' # Build 10-lag windows and preview a few rows
@@ -31,7 +33,7 @@
 #' io_test <- ts_projection(samp$test)
 #'
 #' # Define KNN regressor and fit (distance-based; normalization recommended)
-#' model <- ts_knn(ts_norm_gminmax(), input_size = 4, k = 3)
+#' model <- ts_knn(ts_norm_gminmax(), input_size = 4, input_map = ts_lagmap("pacf"), k = 3)
 #' model <- fit(model, x = io_train$input, y = io_train$output)
 #'
 #' # Predict multiple steps ahead and evaluate
@@ -42,8 +44,8 @@
 #' ev_test <- evaluate(model, output, prediction)
 #' ev_test
 #'@export
-ts_knn <- function(preprocess=NA, input_size=NA, k=NA) {
-  obj <- ts_regsw(preprocess, input_size)
+ts_knn <- function(preprocess = NA, input_size = NA, input_map = ts_lagmap(), k = NA) {
+  obj <- ts_regsw(preprocess, input_size, input_map)
   if (is.na(k))
     k <- input_size/3
   obj$k <- k

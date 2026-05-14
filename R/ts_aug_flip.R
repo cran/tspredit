@@ -13,6 +13,7 @@
 #'# Flip augmentation around the window mean
 #' # Load package and example dataset
 #' library(daltoolbox)
+#' library(tspredit)
 #' data(tsd)
 #'
 #' # Convert to sliding windows and preview

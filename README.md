@@ -11,34 +11,82 @@ Stars](https://img.shields.io/github/stars/cefet-rj-dal/tspredit?logo=Github)
 <!-- badges: end -->
 
 **TSPredIT** (Time Series Prediction with Integrated Tuning) is a
-framework for time series prediction with automatic preprocessing and
-hyperparameter optimization. It is built on top of the [DAL
-Toolbox](https://github.com/cefet-rj-dal/daltoolbox) and enhances its
-capabilities by integrating several advanced functionalities:
+framework for time series forecasting that keeps the predictive workflow
+modular while expanding what can be tuned around it. Built on top of
+[DAL Toolbox](https://github.com/cefet-rj-dal/daltoolbox), it helps the
+reader move from a raw series to a complete forecasting pipeline that
+may include temporal sampling, filtering, augmentation, normalization,
+prediction, comparison, and integrated tuning.
 
-- Automatic hyperparameter tuning for models and preprocessing
-- Outlier detection and removal
-- Time series data augmentation
-- Filtering techniques for noise reduction
-- Ensemble learning support
-- Modular and extensible workflow for predictive modeling
-
-TSPredIT is designed to provide a **more flexible and customizable
-pipeline** for building predictive models on time series data, making it
-easier to compare alternatives and automate repetitive tasks.
+The package is not only a collection of forecasters. Its main didactic
+value is to show that time-series prediction benefits from treating the
+whole pipeline as a sequence of explicit decisions: how to represent the
+series, how to split it in time order, whether to smooth noise, whether
+to enrich the windows, how to scale values, which model family to use,
+and which protocol should be used for evaluation.
 
 ------------------------------------------------------------------------
 
-## Examples
+## Documentation
 
-- [Data
-  manipulation](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/data)
-- [Prediction](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/prediction)
-- [Augmentation](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/augment)
-- [Filtering](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/filter)
+The documentation was reorganized to support two complementary entry
+points:
 
-Additional documentation and tutorials for the underlying DAL Toolbox
-can be found at:
+- a guided tutorial track for readers who want to learn the workflow
+  step by step
+- thematic example collections for readers who want to inspect one stage
+  of the forecasting pipeline at a time
+
+If you are new to `tspredit`, start with the tutorials. If you already
+know the package structure, the thematic collections remain available
+and were rewritten with a more didactic order and clearer grouping.
+
+### Guided tutorial track
+
+- [Tutorials](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/tutorial/) -
+  a 10-part sequence that starts with ARIMA forecasting protocols, then
+  builds the sliding-window MLP pipeline piece by piece, and ends with
+  model comparison and integrated tuning.
+
+### Thematic example collections
+
+- [Time-series data
+  utilities](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/tsdata/) -
+  build `ts_data`, project windows into inputs and targets, and create
+  train/test splits that preserve temporal order.
+- [Datasets](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/datasets/) -
+  inspect the packaged datasets documented in `R/data.R` and
+  `R/tspredbench.R`, one dataset at a time.
+- [Filtering](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/filter/) -
+  compare identity baselines, smoothing methods, robust filters,
+  decomposition methods, and state-space or seasonal adjustments.
+- [Augmentation](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/augment/) -
+  study when synthetic windows help, from simple perturbations to
+  recency-aware transformations.
+- [Normalization](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/normalization/) -
+  inspect how scale, drift, and differencing affect the signal seen by
+  the predictor.
+- [Prediction](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/prediction/) -
+  move from classical baselines to machine-learning and neural
+  forecasting models, then to tuning.
+- [Custom
+  extensions](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/custom/) -
+  learn how to add your own predictors, filters, augmentations, and
+  normalization methods without breaking the package contract.
+
+### Documentation design
+
+The examples were revised to be more useful for learning:
+
+- files inside each collection follow a suggested reading order
+- category `README` files explain why each group exists before listing
+  files
+- examples now open by explaining the method or technique before jumping
+  into code
+- tutorial files no longer expose `output` front matter at the top of
+  the document
+
+Additional documentation for the underlying DAL Toolbox is available at:
 
 - [DAL Toolbox
   documentation](https://cefet-rj-dal.github.io/daltoolbox/)

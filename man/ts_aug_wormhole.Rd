@@ -21,6 +21,7 @@ introducing temporal permutations of lag content.
 # Wormhole augmentation replaces some lags with older values
 # Load package and example dataset
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 
 # Convert to sliding windows and preview

@@ -20,6 +20,7 @@ regressions to capture the primary trend while reducing noise and spikes.
 \examples{
 # time series with noise
 library(daltoolbox)
+library(tspredit)
 data(tsd)
 tsd$y[9] <- 2*tsd$y[9]
 

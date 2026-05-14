@@ -3,6 +3,8 @@
 #' and optionally seasonality components.
 #'@param gamma If TRUE, enables the gamma seasonality component.
 #'@return A `ts_fil_qes` object.
+#' The transformed series is aligned to the input length and may contain leading
+#' `NA` values while the Holt-Winters state is being initialized.
 #'
 #'@references
 #' - P. R. Winters (1960). Forecasting sales by exponentially weighted moving
@@ -10,6 +12,7 @@
 #'@examples
 #'# time series with noise
 #'library(daltoolbox)
+#'library(tspredit)
 #'data(tsd)
 #'tsd$y[9] <- 2*tsd$y[9]
 #'
@@ -37,8 +40,8 @@ ts_fil_qes <- function(gamma = FALSE) {
 transform.ts_fil_qes <- function(obj, data, ...) {
   # Quadratic smoothing via Holt-Winters with beta (trend) and optional gamma (seasonality)
   adjust <- stats::HoltWinters(data, beta=TRUE, gamma=obj$gamma)
-  # Return fitted level component as smoothed series
-  result <- as.vector(adjust$fitted[,1])
+  # Preserve input length; Holt-Winters fitted values start after warm-up
+  result <- c(rep(NA_real_, length(data) - nrow(adjust$fitted)), as.vector(adjust$fitted[,1]))
   return(result)
 }
 
