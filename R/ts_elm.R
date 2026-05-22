@@ -40,7 +40,7 @@
 #' imap <- ts_lagmap("acf")
 #' model <- ts_elm(ts_norm_gminmax(), input_size = 4, input_map = imap,
 #'   nhid = 3, actfun = "purelin")
-#' model <- fit(model, x = io_train$input, y = io_train$output)
+#' model <- daltoolbox::fit(model, x = io_train$input, y = io_train$output)
 #'
 #' # Forecast 5 steps ahead starting from the last known window
 #' prediction <- predict(model, x = io_test$input[1,], steps_ahead = 5)
@@ -48,7 +48,7 @@
 #' output <- as.vector(io_test$output)
 #'
 #' # Evaluate forecast error on the test horizon
-#' ev_test <- evaluate(model, output, prediction)
+#' ev_test <- daltoolbox::evaluate(model, output, prediction)
 #' ev_test
 #'@export
 ts_elm <- function(preprocess = NA, input_size = NA, input_map = ts_lagmap(), nhid = NA, actfun = "purelin") {
@@ -69,6 +69,10 @@ ts_elm <- function(preprocess = NA, input_size = NA, input_map = ts_lagmap(), nh
 #'@noRd
 do_fit.ts_elm <- function(obj, x, y) {
   # Train ELM with random hidden layer and closed-form output weights
+  if (is.data.frame(x))
+    x <- as.matrix(x)
+  if (!is.matrix(y))
+    y <- as.matrix(y)
   obj$model <- elmNNRcpp::elm_train(x, y, nhid = obj$nhid, actfun = obj$actfun, init_weights = "uniform_positive", bias = FALSE, verbose = FALSE)
   return(obj)
 }

@@ -47,8 +47,8 @@ library(daltoolbox)
 library(tspredit)
 data(tsd)
 
-# 1) Wrap the raw vector as `ts_data` without sliding windows
-ts <- ts_data(tsd$y, 0)
+# 1) Wrap the raw vector as `ts_data` with `sw = 1`
+ts <- ts_data(tsd$y, 1)
 ts_head(ts, 3)
 
 # 2) Split into train/test using the last 5 observations as test
@@ -56,7 +56,7 @@ samp <- ts_sample(ts, test_size = 5)
 
 # 3) Fit a user-specified ARIMA(5,0,0)
 model <- ts_arima(p = 5, d = 0, q = 0)
-model <- fit(model, x = samp$train)
+model <- daltoolbox::fit(model, x = samp$train)
 
 # 4) Predict 5 steps ahead from the most recent observed point
 prediction <- predict(model, x = samp$test[1,], steps_ahead = 5)
@@ -64,7 +64,7 @@ prediction <- as.vector(prediction)
 output <- as.vector(samp$test)
 
 # 5) Evaluate forecast accuracy
-ev_test <- evaluate(model, output, prediction)
+ev_test <- daltoolbox::evaluate(model, output, prediction)
 ev_test
 }
 \references{

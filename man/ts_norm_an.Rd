@@ -57,6 +57,11 @@ The concrete operators are implemented in \code{tsanutils()}, while
 the chosen transformation consistently during fit, transform, and inverse
 transform.
 
+In the current contract, the adaptive reference is estimated from the full
+supervised window passed to \code{fit()} or \code{transform()}. So when the input is a
+sliding window produced by \code{ts_data()}, the terminal \code{t0} position is part of
+the same window-wise reference used for the transformation.
+
 The adaptive reference \eqn{\mu} is estimated either by a simple mean or by an
 exponentially weighted mean (\code{average = "ema"}). The hybrid operators
 additionally use a local scale estimate \code{s} based on either the standard
@@ -75,19 +80,19 @@ summary(ts[,10])
 
 # divisive adaptive normalization (default)
 preproc <- ts_norm_an()
-preproc <- fit(preproc, ts)
+preproc <- daltoolbox::fit(preproc, ts)
 tst <- transform(preproc, ts)
 ts_head(tst, 3)
 
 # subtractive adaptive normalization
 preproc <- ts_norm_an(operation = "subtract")
-preproc <- fit(preproc, ts)
+preproc <- daltoolbox::fit(preproc, ts)
 tst <- transform(preproc, ts)
 ts_head(tst, 3)
 
 # EMA-based soft division
 preproc <- ts_norm_an(average = "ema", operation = "softdivide", scale = "mad")
-preproc <- fit(preproc, ts)
+preproc <- daltoolbox::fit(preproc, ts)
 tst <- transform(preproc, ts)
 ts_head(tst, 3)
 }

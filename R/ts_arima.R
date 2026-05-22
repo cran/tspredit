@@ -39,8 +39,8 @@
 #' library(tspredit)
 #' data(tsd)
 #'
-#'# 1) Wrap the raw vector as `ts_data` without sliding windows
-#'ts <- ts_data(tsd$y, 0)
+#'# 1) Wrap the raw vector as `ts_data` with `sw = 1`
+#'ts <- ts_data(tsd$y, 1)
 #'ts_head(ts, 3)
 #'
 #'# 2) Split into train/test using the last 5 observations as test
@@ -48,7 +48,7 @@
 #'
 #'# 3) Fit a user-specified ARIMA(5,0,0)
 #'model <- ts_arima(p = 5, d = 0, q = 0)
-#'model <- fit(model, x = samp$train)
+#'model <- daltoolbox::fit(model, x = samp$train)
 #'
 #'# 4) Predict 5 steps ahead from the most recent observed point
 #'prediction <- predict(model, x = samp$test[1,], steps_ahead = 5)
@@ -56,7 +56,7 @@
 #'output <- as.vector(samp$test)
 #'
 #'# 5) Evaluate forecast accuracy
-#'ev_test <- evaluate(model, output, prediction)
+#'ev_test <- daltoolbox::evaluate(model, output, prediction)
 #'ev_test
 #'@export
 ts_arima <- function(p = NULL, d = NULL, q = NULL) {
@@ -123,7 +123,7 @@ predict.ts_arima <- function(object, x, y = NULL, steps_ahead=NULL, ...) {
   else {
     if (is.null(steps_ahead))
       steps_ahead <- length(x)
-    if ((steps_ahead == 1) && (length(x) != 1)) {
+    if (!is.null(x) && (steps_ahead == 1) && (length(x) != 1)) {
       # Rolling one-step-ahead forecast across the horizon
       pred <- NULL
       model <- object$model
