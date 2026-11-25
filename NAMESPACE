@@ -40,6 +40,7 @@ S3method(fit,ts_warma)
 S3method(inverse_transform,ts_norm_an)
 S3method(inverse_transform,ts_norm_diff)
 S3method(inverse_transform,ts_norm_gminmax)
+S3method(inverse_transform,ts_norm_none)
 S3method(inverse_transform,ts_norm_swminmax)
 S3method(predict,ts_arima)
 S3method(predict,ts_arimax)
@@ -90,7 +91,11 @@ export(adjust_ts_data)
 export(adjust_ts_data_mv)
 export(do_fit)
 export(do_predict)
+export(fit_arima)
 export(loadfulldata)
+export(plot_series)
+export(plot_ts)
+export(plot_ts_pred)
 export(plot_ts_pred_mv)
 export(sMAPE.ts)
 export(ts_arima)
@@ -189,35 +194,42 @@ importFrom(elmNNRcpp,
   elm_predict,
   elm_train
 )
-importFrom(forecast,
-  Arima,
-  auto.arima,
-  forecast
+importFrom(ggplot2,
+  aes,
+  element_blank,
+  geom_line,
+  geom_point,
+  ggplot,
+  labs,
+  scale_color_manual,
+  theme,
+  theme_bw,
+  xlab,
+  ylab
 )
 importFrom(graphics,boxplot)
-importFrom(hht,CEEMD)
 importFrom(nnet,nnet)
 importFrom(randomForest,randomForest)
+importFrom(reshape,melt)
 importFrom(stats,
   HoltWinters,
   acf,
+  arima,
   fft,
   lowess,
   na.omit,
+  pacf,
   predict,
   quantile,
   rexp,
   rnorm,
   sd,
   smooth.spline,
+  splinefun,
   stl,
   ts
 )
 importFrom(utils,
   combn,
   head
-)
-importFrom(wavelets,
-  imodwt,
-  modwt
 )

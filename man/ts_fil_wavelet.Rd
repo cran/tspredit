@@ -7,14 +7,25 @@
 ts_fil_wavelet(filter = "haar")
 }
 \arguments{
-\item{filter}{Available wavelet filters: 'haar', 'd4', 'la8', 'bl14', 'c6'.}
+\item{filter}{Available wavelet filters: 'haar', 'd4', 'la8', 'bl14', 'c6'. A vector
+of names selects, in \code{fit}, the filter that best preserves the signal (highest R2).}
 }
 \value{
 A \code{ts_fil_wavelet} object.
 }
 \description{
-Denoise a series using discrete wavelet transforms and selected
-wavelet families.
+Denoise a series using the Maximal Overlap Discrete Wavelet Transform
+(MODWT): decompose the signal, zero the finest-scale detail, and reconstruct.
+}
+\details{
+The MODWT is a shift-invariant, undecimated wavelet transform implemented
+as a pyramid algorithm (Percival & Walden, 2000), with the wavelet/scaling filter
+coefficients (Daubechies, least-asymmetric, coiflet, best-localized) carried as
+internal constants. This function is a backport of the canonical Python \code{pytspredit}
+implementation; the two share the same algorithm and coefficients. Because the
+MODWT is a deterministic linear transform, parity is value-for-value (~5e-6). Note:
+the published coiflet ('c6') coefficients are only approximately orthogonal, so c6
+reconstructs to ~1e-6 (as in any package).
 }
 \examples{
 # Denoising with discrete wavelets (optionally selecting best filter)
@@ -24,7 +35,7 @@ library(tspredit)
 data(tsd)
 tsd$y[9] <- 2 * tsd$y[9]  # inject an outlier
 
-# Fit wavelet filter ("haar" by default; can pass a list to select best)
+# Fit wavelet filter ("haar" by default; can pass a vector to select best)
 filter <- ts_fil_wavelet()
 filter <- daltoolbox::fit(filter, tsd$y)
 y <- transform(filter, tsd$y)
@@ -34,8 +45,11 @@ plot_ts_pred(y = tsd$y, yadj = y)
 }
 \references{
 \itemize{
-\item S. Mallat (1989). A Theory for Multiresolution Signal Decomposition:
-The Wavelet Representation. IEEE Transactions on Pattern Analysis and
-Machine Intelligence.
+\item S. Mallat (1989). A Theory for Multiresolution Signal Decomposition: The Wavelet
+Representation. IEEE Transactions on Pattern Analysis and Machine Intelligence.
+\item D. B. Percival and A. T. Walden (2000). Wavelet Methods for Time Series Analysis.
+Cambridge University Press (MODWT pyramid algorithm).
+\item I. Daubechies (1992). Ten Lectures on Wavelets. SIAM (source of the Daubechies /
+least-asymmetric / coiflet filter coefficient families).
 }
 }

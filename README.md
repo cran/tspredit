@@ -23,7 +23,7 @@ normalize values, which predictor to use, and how to compare forecasting
 protocols. This makes the package useful for teaching, experimentation,
 benchmark studies, and applied time series projects.
 
-Current package version in this repository: `2.0.707`.
+Current package version in this repository: `2.0.757`.
 
 ------------------------------------------------------------------------
 
@@ -148,6 +148,8 @@ extensions.
 
 ## Related DAL Projects
 
+- [pytspredit — Python sibling
+  implementation](https://github.com/cefet-rj-dal/pytspredit)
 - [DAL Toolbox](https://cefet-rj-dal.github.io/daltoolbox/)
 - [harbinger](https://cefet-rj-dal.github.io/harbinger/)
 - [Data Analytics Lab](https://eic.cefet-rj.br/~dal/)
@@ -157,10 +159,19 @@ extensions.
 ## Playlist
 
 [TSPredIT
-videos](https://www.youtube.com/playlist?list=PLJb2qK1RWkbGlxUAljn-9eP2r_3m70aUC)
+videos](https://www.youtube.com/playlist?list=PLKGnd3Kb5RZg)
 
 [![Watch the playlist on
-YouTube](https://img.shields.io/badge/YouTube-Watch%20playlist-red?logo=youtube&logoColor=white)](https://www.youtube.com/playlist?list=PLJb2qK1RWkbGlxUAljn-9eP2r_3m70aUC)
+YouTube](https://img.shields.io/badge/YouTube-Watch%20playlist-red?logo=youtube&logoColor=white)](https://www.youtube.com/playlist?list=PLKGnd3Kb5RZg)
+
+------------------------------------------------------------------------
+
+## Slides and Videos
+
+- [Slide decks](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/slides/) -
+  one presentation per topic, indexed in `examples/slides/README.md`.
+- [Video index](https://github.com/cefet-rj-dal/tspredit/tree/main/examples/videos/) -
+  one entry per published video, indexed in `examples/videos/README.md`.
 
 ------------------------------------------------------------------------
 

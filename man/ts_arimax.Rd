@@ -31,7 +31,7 @@ with external regressors.
 
 The model keeps one target variable \code{y} as the main forecasting objective and
 uses the aligned auxiliary variables \verb{x1, ..., xn} as regressors through the
-\code{xreg} mechanism of the \code{forecast} package.
+\code{xreg} mechanism (native \code{stats::arima}; no \code{forecast} dependency).
 
 This is the natural choice when the user thinks in the following way:
 \itemize{
@@ -57,7 +57,7 @@ known beforehand
 The current implementation follows the same philosophy as \code{ts_arima()}:
 \itemize{
 \item if \code{p}, \code{d}, and \code{q} are supplied, fit that specific order
-\item otherwise use \code{forecast::auto.arima()} on the target with \code{xreg}
+\item otherwise select the order natively (compact AICc search) on the target with \code{xreg}
 }
 
 This keeps the singular multivariate branch consistent with the existing raw
@@ -72,7 +72,10 @@ x2[is.na(x2)] <- tsd$y[is.na(x2)]
 mv <- ts_data_mv(data.frame(y = tsd$y, x1 = x1, x2 = as.numeric(x2)), y = "y")
 samp <- ts_sample(mv, test_size = 5)
 
-model <- ts_arimax(models_x = list(x1 = ts_arima(), x2 = ts_arima()))
+# explicit small orders keep the example fast (no automatic order search)
+model <- ts_arimax(p = 1, d = 0, q = 0,
+                  models_x = list(x1 = ts_arima(p = 1, d = 0, q = 0),
+                                  x2 = ts_arima(p = 1, d = 0, q = 0)))
 model <- daltoolbox::fit(model, samp$train)
 predict(model, steps_ahead = 5)
 }

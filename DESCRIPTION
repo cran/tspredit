@@ -1,6 +1,6 @@
 Package: tspredit
 Title: Time Series Prediction with Integrated Tuning
-Version: 2.0.717
+Version: 2.0.757
 Authors@R: 
   c(    person(given = "Eduardo", family = "Ogasawara", role = c("aut", "ths", "cre"), 
                email = "eogasawara@ieee.org", comment = c(ORCID = "0000-0002-0466-0626")),
@@ -29,11 +29,11 @@ URL: https://cefet-rj-dal.github.io/tspredit/,
 BugReports: https://github.com/cefet-rj-dal/tspredit/issues
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
-Imports: stats, e1071, elmNNRcpp, FNN, forecast, hht, KFAS, nnet,
-        randomForest, wavelets, dplyr, daltoolbox
-Config/roxygen2/version: 8.1.0
+Imports: stats, e1071, elmNNRcpp, FNN, KFAS, nnet, randomForest, dplyr,
+        daltoolbox, ggplot2, reshape
+Config/roxygen2/version: 8.1.1
 NeedsCompilation: no
-Packaged: 2026-09-08 19:39:25 UTC; gpca
+Packaged: 2026-11-25 15:20:37 UTC; gpca
 Author: Eduardo Ogasawara [aut, ths, cre] (ORCID:
     <https://orcid.org/0000-0002-0466-0626>),
   Arthur Garcia [aut],
@@ -50,4 +50,4 @@ Author: Eduardo Ogasawara [aut, ths, cre] (ORCID:
   CEFET/RJ [cph]
 Maintainer: Eduardo Ogasawara <eogasawara@ieee.org>
 Repository: CRAN
-Date/Publication: 2026-09-09 05:20:02 UTC
+Date/Publication: 2026-11-25 18:40:02 UTC
